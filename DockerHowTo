@@ -1,0 +1,55 @@
+push image to dockerhub
+mvn install dockerfile:push
+Erzeugen images
+mvn install dockerfile:build
+
+listet alle gestarteten container
+docker container list
+
+listet alle gestarteten und gestoppten container
+docker container list -a
+
+alte container löschen
+docker rm $(docker ps -a -q)
+
+Mysql container erzeugen und starten
+docker run -d \
+      -p 2012:3306 \
+     --name mysql-docker-container \
+     -e MYSQL_ROOT_PASSWORD=1234 \
+     -e MYSQL_DATABASE=topic_db \
+     -e MYSQL_USER=root \
+     -e MYSQL_PASSWORD=1234 \
+        mysql:latest
+
+docker run -d -p 2012:3306 --name mysql-docker-container -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=topic_db -e MYSQL_USER=root -e MYSQL_PASSWORD=1234 mysql:latest
+
+container starten und stoppen
+docker start springbootbasicsetupdata
+docker stop springbootbasicsetupdata
+
+michibln74/springbootbasicsetupdata container erzeugen und starten mit link zu mysqlcontainer 
+docker run -t --name springbootbasicsetupdata --link mysql-docker-container:mysql -p 8087:8443 michibln74/springbootbasicsetupdata
+docker run -t --name no_ssl --link mysql-docker-container:mysql -p 8087:8080 michibln74/springbootbasicsetupdata
+
+Kubernetes version
+kubectl version
+
+View notes in the cluster
+kubectl get nodes
+
+create Kubernetes deployment
+kubectl run kubernetes-springbootbasicsetupdata --image=michibln74/springbootbasicsetupdata:latest --port=9000
+
+list kubernetes deployments; die deployments laufen in einem privaten netzwerk und vin außerhalb unsichtbar
+kubectl get deployments
+
+starten eines proxies der von außerhalb mit dem privaten netzwerk kommuniziert(in anderem Terminal)
+now have a connection between our host (the online terminal) and the Kubernetes cluster
+kubectl proxy
+
+You can see all those APIs hosted through the proxy endpoint, now available at through http://localhost:8001. For example, we can query the version directly through the API using the curl command:
+curl http://localhost:8001/version
+
+
+export POD_NAME=$(kubectl get pods -o go-template --template '{{range .tems}}{{.metadata.name}}{{"\n"}}{{end}}') echo Name of the Pod: $POD_NAME
