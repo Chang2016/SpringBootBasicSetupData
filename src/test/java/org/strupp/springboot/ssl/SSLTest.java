@@ -21,23 +21,30 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.List;
+import javax.net.ssl.SSLContext;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.junit.Before;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,9 +54,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 import org.strupp.springboot.SpringBootBasicDataMain;
+import org.strupp.springboot.topic.Topic;
+import org.strupp.springboot.topic.TopicList;
 
 //Ich musste die SSL-Properties von src/main nach src/test kopieren damit SSL funktioniert
 
@@ -68,20 +81,18 @@ public class SSLTest {
   @Autowired
   private Environment env;
 
-  @Ignore
-  @Test//(expected = SSLPeerUnverifiedException.class)
-  public void whenHttpsUrlIsConsumed_thenException() throws ClientProtocolException, IOException {
+  @Test
+  public void retrieveTopicsUsingSsl() {
     String keyStoreType = env.getProperty("server.ssl.key-store-type");
     String timezone = env.getProperty("timezone");
     assertThat(keystore, is(notNullValue()));
     assertThat(timezone, is("GMT"));
     assertThat(keyStoreType, is("PKCS12"));
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-    String urlOverHttps = "https://localhost:" + port + "/courses/";
-    HttpGet getMethod = new HttpGet(urlOverHttps);
 
-    HttpResponse response = httpClient.execute(getMethod);
-    assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
+    RestTemplate restTemplate = initSslClient();
+    final String uri = String.format("https://localhost:%d/topics/", port);
+    ResponseEntity<TopicList> response = restTemplate.getForEntity(uri, TopicList.class);
+    assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
   }
 
   /*
@@ -105,5 +116,35 @@ public class SSLTest {
     HttpGet getMethod = new HttpGet(urlOverHttps);
     HttpResponse response = httpClient.execute(getMethod);
     assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
+  }
+
+  private RestTemplate initSslClient() {
+    String pathToKeystore = "file:///Users/michaelstrupp/projects/training/springboot/SpringBootBasicSetupData/src/main/resources/keystore.p12";
+    SSLContext sslContext = null;
+    try {
+      URL url = new URL(pathToKeystore);
+      sslContext = new SSLContextBuilder()
+          .loadTrustMaterial(url, "123456".toCharArray())
+          .build();
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    } catch (KeyManagementException e) {
+      e.printStackTrace();
+    } catch (CertificateException e) {
+      e.printStackTrace();
+    } catch (KeyStoreException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext);
+    HttpClient httpClient = HttpClients.custom()
+        .setSSLSocketFactory(socketFactory)
+        .build();
+    HttpComponentsClientHttpRequestFactory factory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
+    return new RestTemplate(factory);
   }
 }

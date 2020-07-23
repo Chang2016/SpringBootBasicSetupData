@@ -47,8 +47,6 @@ import org.strupp.springboot.authentication.OAuth2SecurityConfiguration;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TopicController.class) //bootstraps just TopicController
-//@WebMvcTest(includeFilters = @Filter(classes = EnableWebSecurity.class))
-//@Import(includeFilters = @Filter(classes = EnableWebSecurity.class), OAuth2SecurityConfiguration.class)
 @ContextConfiguration(classes = {SpringBootBasicDataMain.class,
     AuthorizationServerConfiguration.class,
     OAuth2SecurityConfiguration.class})
@@ -61,13 +59,13 @@ public class TopicControllerWithoutServerJustWeblayerTest {
   private MockMvc mockMvc;
 
   @MockBean
+  private TopicTransformer topicTransformer;
+
+  @MockBean
   private TopicService service;
 
   @MockBean
   private TokenStore tokenStore;
-
-//    @MockBean
-//    TokenAuthProvider tokenAuthProvider;
 
   @Value("classpath:create_topic.json")
   private Resource createJsonScript;
@@ -84,14 +82,18 @@ public class TopicControllerWithoutServerJustWeblayerTest {
 
   @Before
   public void setup() {
-    String keyStoreType = env.getProperty("server.ssl.key-store-type");
-    System.out.println(keyStoreType);
     List<Topic> topics = new ArrayList<>();
     Topic topic = new Topic();
     topic.setName("Mockito");
     topic.setId(5L);
     topics.add(topic);
+    List<TopicDto> dtos = new ArrayList<>();
+    TopicDto dto = new TopicDto();
+    dto.setName(topic.getName());
+    dto.setId(topic.getId());
+    dtos.add(dto);
     Optional<Topic> opt = Optional.of(topic);
+    when(topicTransformer.toListOfTopicDto(any())).thenReturn(dtos);
     when(service.retrieveTopics()).thenReturn(topics);
     when(service.retrieveTopic(anyLong())).thenReturn(opt);
     when(service.createTopic(any(Topic.class))).thenAnswer((Answer<Topic>) invocationOnMock -> {
@@ -152,9 +154,9 @@ public class TopicControllerWithoutServerJustWeblayerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
-        .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].id", is(5)))
-        .andExpect(jsonPath("$[0].name", is("Mockito")));
+        .andExpect(jsonPath("$.topics", hasSize(1)))
+        .andExpect(jsonPath("$.topics[0].id", is(5)))
+        .andExpect(jsonPath("$.topics[0].name", is("Mockito")));
   }
 
   @Test
@@ -163,9 +165,9 @@ public class TopicControllerWithoutServerJustWeblayerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
-        .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].id", is(5)))
-        .andExpect(jsonPath("$[0].name", is("Mockito")));
+        .andExpect(jsonPath("$.topics", hasSize(1)))
+        .andExpect(jsonPath("$.topics[0].id", is(5)))
+        .andExpect(jsonPath("$.topics[0].name", is("Mockito")));
   }
 
   @After

@@ -46,7 +46,10 @@ import org.strupp.springboot.exceptions.ResourceNotFoundException;
  */
 @RestController
 public class TopicController {
-	
+
+	@Autowired
+	private TopicTransformer topicTransformer;
+
 	@Autowired
 	private TopicService topicService;
 	
@@ -57,10 +60,12 @@ public class TopicController {
 	
 //	automatische Serialisierung nach JSON
 	@RequestMapping("/topics")
-	public List<Topic> retrieveTopics(@RequestHeader HttpHeaders headers) throws InterruptedException, ExecutionException {
+	public TopicList retrieveTopics(@RequestHeader HttpHeaders headers) throws InterruptedException, ExecutionException {
 //		CompletableFuture<User> future = topicService.findUser("Marco");
 //		User user = future.get();
-		return topicService.retrieveTopics();
+		List<Topic> topics = topicService.retrieveTopics();
+		List<TopicDto> topicDtos = topicTransformer.toListOfTopicDto(topics);
+		return new TopicList(topicDtos);
 	}
 	
 	@RequestMapping("/topics/delayed")
