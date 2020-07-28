@@ -151,9 +151,9 @@ public class CourseServiceIT {
 	        .andExpect(jsonPath("$[2].id", is(3)))
 	        .andExpect(jsonPath("$[2].name", is("Judentum")));
 	}
-	
+
 	@Test
-	public void testCourseGetHavingtopicName() throws Exception {
+	public void testCourseGetHavingTopicName() throws Exception {
 		this.mockMvc.perform(get("https://localhost:" + port + "/courses/topics/Religion")
 					.contentType(MediaType.APPLICATION_JSON))
 //			    .andDo(print())

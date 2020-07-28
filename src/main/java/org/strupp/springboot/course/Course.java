@@ -34,7 +34,7 @@ public class Course {
 //	Course gelöscht.
 //	ManyToMany muss immer Set anstatt List verwenden, da sonst beim delete zuerst alles aus der join table gelöscht wird
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "Course_Student",
+	@JoinTable(name = "course_student",
     joinColumns = {
         @JoinColumn(
             name = "course_id", 
