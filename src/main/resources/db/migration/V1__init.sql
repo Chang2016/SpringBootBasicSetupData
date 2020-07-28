@@ -11,19 +11,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema topic_db
+-- Schema topic_db2
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema topic_db
+-- Schema topic_db2
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `topic_db` DEFAULT CHARACTER SET latin1 ;
-USE `topic_db` ;
+CREATE SCHEMA IF NOT EXISTS `topic_db2` DEFAULT CHARACTER SET latin1 ;
+USE `topic_db2` ;
 
 -- -----------------------------------------------------
 -- Table `topic_db`.`course`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `topic_db`.`course` (
+CREATE TABLE IF NOT EXISTS `topic_db2`.`course` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
   `start_date` DATE NULL DEFAULT NULL,
@@ -38,7 +38,7 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `topic_db`.`course_student`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `topic_db`.`course_student` (
+CREATE TABLE IF NOT EXISTS `topic_db2`.`course_student` (
   `course_id` BIGINT(20) NOT NULL,
   `student_id` BIGINT(20) NOT NULL,
   INDEX `FK4xxxkt1m6afc9vxp3ryb0xfhi` (`student_id` ASC),
@@ -50,7 +50,7 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `topic_db`.`student`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `topic_db`.`student` (
+CREATE TABLE IF NOT EXISTS `topic_db2`.`student` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `birthday` DATE NULL DEFAULT NULL,
   `created` DATETIME NULL DEFAULT NULL,
@@ -62,9 +62,9 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `topic_db`.`topic`
+-- Table `topic_db2`.`topic`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `topic_db`.`topic` (
+CREATE TABLE IF NOT EXISTS `topic_db2`.`topic` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
