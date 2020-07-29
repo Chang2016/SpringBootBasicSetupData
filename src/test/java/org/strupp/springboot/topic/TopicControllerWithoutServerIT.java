@@ -18,7 +18,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,6 @@ import org.springframework.util.StreamUtils;
 @SpringBootTest  //bootstraps whole ApplicationContext
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
-@Sql({"/data-h2.sql"})
 public class TopicControllerWithoutServerIT {
 
   @Autowired
