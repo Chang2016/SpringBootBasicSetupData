@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -24,17 +23,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class CourseRepositoryTest {
 
   @Autowired
-  private TestEntityManager entityManager;
-
-  @Autowired
   private CourseRepository repository;
-
 
   @Test
   public void testCustomRepository() {
     // when
-    List<Course> found = (List<Course>) repository.findAll();
+    List<Course> found = repository.findAll();
     assertThat(found.size()).isEqualTo(3);
   }
 
+  @Test
+  public void findCourseByName() {
+    // when
+    List<Course> found = repository.findByName("Christentum");
+    assertThat(found.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void findCoursesWithTopicId() {
+    // when
+    List<Course> found = repository.findByTopicId(1);
+    assertThat(found.size()).isEqualTo(3);
+  }
 }

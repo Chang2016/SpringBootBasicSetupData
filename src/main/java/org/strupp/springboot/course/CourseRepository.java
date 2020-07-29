@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 	//Methode wird automatisch erzeugt Methodenname muss 'findBy'+ [Propertyname] sein
-	public List<Course> findByName(long topicId);
+	List<Course> findByName(String name);
 	//wenn es um eine Klasse wie bspw Topic geht muss hinten noch die ID von Topic angehängt werden
-	public List<Course> findByTopicId(long topicId);
+	List<Course> findByTopicId(long topicId);
 }
