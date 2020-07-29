@@ -1,6 +1,5 @@
 package org.strupp.springboot.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,46 +15,52 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-	private static String REALM="MY_OAUTH_REALM";
-    
-    @Autowired
-    private TokenStore tokenStore;
- 
-    @Autowired
-    private UserApprovalHandler userApprovalHandler;
- 
-    @Autowired
-    @Qualifier("authenticationManagerBean")
-    private AuthenticationManager authenticationManager;
-    
-    /*
-     * Registers a client with client-id ‘my-trusted-client’ and password ‘secret’ and roles 
-     * & scope he is allowed  for.
-     * Specifies that any generated access token will be valid for only 120 seconds
-     * Specifies that any generated refresh token will be valid for only 600 seconds
-     */
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
- 
-        clients.inMemory()
-            .withClient("my-trusted-client")
-            .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
-            .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
-            .scopes("read", "write", "trust")
-            .secret("secret")
-            .accessTokenValiditySeconds(86400).//Access token is only valid for 2 minutes.
-            refreshTokenValiditySeconds(10000);//Refresh token is only valid for 10 minutes.
-    }
- 
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore).userApprovalHandler(userApprovalHandler)
-                .authenticationManager(authenticationManager);
-    }
- 
-    @Override
-    public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.realm(REALM+"/client");
-    }
+  private static final String REALM = "MY_OAUTH_REALM";
+
+  private final TokenStore tokenStore;
+
+  private final UserApprovalHandler userApprovalHandler;
+
+  @Qualifier("authenticationManagerBean")
+  private final AuthenticationManager authenticationManager;
+
+  public AuthorizationServerConfiguration(
+      TokenStore tokenStore,
+      UserApprovalHandler userApprovalHandler,
+      AuthenticationManager authenticationManager) {
+    this.tokenStore = tokenStore;
+    this.userApprovalHandler = userApprovalHandler;
+    this.authenticationManager = authenticationManager;
+  }
+
+  /*
+   * Registers a client with client-id ‘my-trusted-client’ and password ‘secret’ and roles
+   * & scope he is allowed  for.
+   * Specifies that any generated access token will be valid for only 120 seconds
+   * Specifies that any generated refresh token will be valid for only 600 seconds
+   */
+  @Override
+  public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
+    clients.inMemory()
+        .withClient("my-trusted-client")
+        .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
+        .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
+        .scopes("read", "write", "trust")
+        .secret("secret")
+        .accessTokenValiditySeconds(86400).
+        refreshTokenValiditySeconds(10000);
+  }
+
+  @Override
+  public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+    endpoints.tokenStore(tokenStore).userApprovalHandler(userApprovalHandler)
+        .authenticationManager(authenticationManager);
+  }
+
+  @Override
+  public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
+    oauthServer.realm(REALM + "/client");
+  }
 
 }

@@ -10,17 +10,17 @@ import org.springframework.security.oauth2.provider.client.InMemoryClientDetails
 import org.strupp.springboot.authentication.OAuth2SecurityConfiguration;
 import org.strupp.springboot.topic.Topic;
 
-@TestConfiguration
+//@TestConfiguration
 //@EnableJpaRepositories("org.spring.springboot")
 public class TopicTestConfiguration {
 
-	@Bean
-	public WebSecurityConfigurerAdapter topic() {
-		WebSecurityConfigurerAdapter conf = new OAuth2SecurityConfiguration();
-		ClientDetailsService service = new InMemoryClientDetailsService();
-		
-		return conf;
-	}
+//	@Bean
+//	public WebSecurityConfigurerAdapter topic() {
+//		WebSecurityConfigurerAdapter conf = new OAuth2SecurityConfiguration();
+//		ClientDetailsService service = new InMemoryClientDetailsService();
+//
+//		return conf;
+//	}
 	
 //	@Bean
 //	public Course courseWithoutTopic() {
