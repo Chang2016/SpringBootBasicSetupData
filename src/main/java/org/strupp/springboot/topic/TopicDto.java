@@ -35,4 +35,12 @@ public class TopicDto {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public String toString() {
+    return "TopicDto{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        '}';
+  }
 }
