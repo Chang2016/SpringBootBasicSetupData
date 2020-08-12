@@ -1,7 +1,5 @@
 package org.strupp.springboot.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +42,7 @@ public class StandardRestClient {
     return new TopicList();
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     String baseUrl = "https://localhost:8443";
     String pathToKeystore = "file:///Users/michaelstrupp/projects/training/springboot/SpringBootBasicSetupData/src/main/resources/keystore.p12";
     SslRestTemplateInitializer sslRestTemplateInitializer = new SslRestTemplateInitializer();

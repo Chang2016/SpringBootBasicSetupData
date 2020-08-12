@@ -13,3 +13,7 @@ VALUES
 INSERT INTO course
 VALUES
   (3, 'Judentum', '2018-12-03', 1);
+
+INSERT INTO student
+VALUES
+ (1, '2018-12-03', '2020-07-12', 'Alt');

@@ -216,7 +216,7 @@ public class CourseServiceIT {
 
   @Test
   @Transactional
-  public void testCourseDeleteNonExistsing() throws Exception {
+  public void testCourseDeleteNonExisting() throws Exception {
     mockMvc.perform(delete("https://localhost:" + port + "/courses/200"))
         .andExpect(status().isNotFound());
   }

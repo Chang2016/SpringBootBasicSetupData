@@ -33,9 +33,9 @@ public class CourseService {
 		return res;
 	}
 	
-	public Course retrieveCourse(long id) {
+	public Optional<Course> retrieveCourse(long id) {
 		Optional<Course> opt = courseRepository.findById(id);
-		return opt.orElseGet(Course::new);
+		return opt;
 	}
 	
 	@Transactional
@@ -62,19 +62,19 @@ public class CourseService {
 	@Transactional
 	public Course updateCourse(Course course) {
 		try {
-			List<Student> detachedEntities = findDetachedStudents(course);
-			course.getStudents().removeAll(detachedEntities);
-			List<Student> persistentEntities = studentRepository.saveAll(detachedEntities);
-			exchangeStudents(course, persistentEntities);
+//			List<Student> detachedStudents = findDetachedStudents(course);
+//			course.getStudents().removeAll(detachedStudents);
+//			List<Student> updatedStudents = studentRepository.saveAll(detachedStudents);
+//			replaceDetachedWithUpdatedStudents(course, updatedStudents);
 			return courseRepository.save(course);
 		} catch (Exception e) {
 			throw new ResourceNotFoundException(e.getMessage());
 		}
 	}
 	
-	private void exchangeStudents(Course course, List<Student> detachedEntities) {
-		course.getStudents().removeAll(detachedEntities);
-		detachedEntities.stream().forEach(course::addStudent);
+	private void replaceDetachedWithUpdatedStudents(Course course, List<Student> updatedEntities) {
+		course.getStudents().removeAll(updatedEntities);
+		updatedEntities.forEach(course::addStudent);
 	}
 	
 	private List<Student> findDetachedStudents(Course course) {

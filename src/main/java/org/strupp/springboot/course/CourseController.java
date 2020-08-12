@@ -2,12 +2,14 @@ package org.strupp.springboot.course;
 
 import java.util.List;
 
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,9 +44,10 @@ public class CourseController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="courses/{id}")
-	public Course retrieveCourse(@PathVariable long id) {
-		
-		return courseService.retrieveCourse(id);
+	public ResponseEntity<Course> retrieveCourse(@PathVariable long id) {
+		Optional<Course> maybeCourse = courseService.retrieveCourse(id);
+		return maybeCourse.map(ResponseEntity::ok)
+				.orElseGet(() -> new ResponseEntity<>(new Course(), HttpStatus.NOT_FOUND));
 	}
 	
 //	@RequestMapping(method=RequestMethod.POST, value="topics/{id}/courses/", produces="application/json;charset=UTF-8")
