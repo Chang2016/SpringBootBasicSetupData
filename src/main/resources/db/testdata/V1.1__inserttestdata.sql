@@ -17,3 +17,11 @@ VALUES
 INSERT INTO student
 VALUES
  (1, '2018-12-03', '2020-07-12', 'Alt');
+
+INSERT INTO student
+VALUES
+(2, '1999-07-03', '2020-07-12', 'Müller');
+
+INSERT INTO course_student
+VALUES
+(1, 1);

@@ -62,10 +62,10 @@ public class CourseService {
 	@Transactional
 	public Course updateCourse(Course course) {
 		try {
-//			List<Student> detachedStudents = findDetachedStudents(course);
-//			course.getStudents().removeAll(detachedStudents);
-//			List<Student> updatedStudents = studentRepository.saveAll(detachedStudents);
-//			replaceDetachedWithUpdatedStudents(course, updatedStudents);
+			List<Student> detachedStudents = findDetachedStudents(course);
+			course.getStudents().removeAll(detachedStudents);
+			List<Student> updatedStudents = studentRepository.saveAll(detachedStudents);
+			replaceDetachedWithUpdatedStudents(course, updatedStudents);
 			return courseRepository.save(course);
 		} catch (Exception e) {
 			throw new ResourceNotFoundException(e.getMessage());

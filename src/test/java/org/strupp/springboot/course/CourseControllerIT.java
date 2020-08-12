@@ -16,10 +16,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.strupp.springboot.model.student.Student;
 import org.strupp.springboot.topic.Topic;
 import org.strupp.springboot.topic.TopicRepository;
 
@@ -63,7 +64,7 @@ import org.strupp.springboot.topic.TopicRepository;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
-public class CourseServiceIT {
+public class CourseControllerIT {
 
   @Autowired
   private WebApplicationContext wac;
@@ -85,7 +86,7 @@ public class CourseServiceIT {
   @Value("classpath:course.json")
   private Resource courseJsonScript;
 
-  @Value("classpath:update_course.json")
+  @Value("classpath:update_course_newStudentlist.json")
   private Resource updateCourseJsonScript;
 
   @Value("classpath:update_course_no_topic.json")
@@ -111,7 +112,8 @@ public class CourseServiceIT {
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$.id", is(1)))
-        .andExpect(jsonPath("$.name", is("Christentum")));
+        .andExpect(jsonPath("$.name", is("Christentum")))
+        .andExpect(jsonPath("$.students[0].name", is("Alt")));
   }
 
   @Test
@@ -175,7 +177,7 @@ public class CourseServiceIT {
 
   @Test
   @Transactional
-  public void testCoursePut() throws Exception {
+  public void updateCourseNameAndStudentList() throws Exception {
     String content = StreamUtils
         .copyToString(updateCourseJsonScript.getInputStream(), StandardCharsets.UTF_8);
     mockMvc.perform(put("https://localhost:" + port + "/courses/1")
@@ -184,8 +186,12 @@ public class CourseServiceIT {
         .andExpect(status().is2xxSuccessful());
     Optional<Course> opt = courseRepository.findById(1L);
     assertThat(opt.isPresent(), is(true));
-    assertThat(opt.get().getName().equals("Buddismus"), is(true));
-    assertThat(opt.get().getId(), is(1L));
+    Course course = opt.get();
+    assertThat(course.getName().equals("Buddismus"), is(true));
+    assertThat(course.getId(), is(1L));
+    Set<Student> students = course.getStudents();
+    assertThat(students.size(), is(1));
+    assertThat(students.iterator().next().getName(), is("UpdatedMüller"));
   }
 
   @Test

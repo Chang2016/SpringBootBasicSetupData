@@ -73,6 +73,7 @@ public class CourseController {
 	
 	@RequestMapping(method=RequestMethod.PUT, value="courses/{id}", produces="application/json;charset=UTF-8")
 	public ResponseEntity<Course> updateCourse(@PathVariable long id, @Valid @RequestBody Course course, HttpServletRequest request) {
+		course.setId(id);
 		Course result = courseService.updateCourse(course);
 		UriComponents uri = ServletUriComponentsBuilder.fromRequest(request).build();
         return ResponseEntity.created(uri.toUri()).build();
