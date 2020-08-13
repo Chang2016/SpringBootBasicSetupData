@@ -1,6 +1,5 @@
 package org.strupp.springboot.topic;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -17,5 +16,12 @@ public class TopicTransformer {
   public TopicDto toTopicDto(Topic topic) {
     TopicDto dto = new TopicDto(topic.getId(), topic.getName());
     return dto;
+  }
+
+  public Topic toTopic(TopicDto topicDto) {
+    Topic topic = new Topic();
+    topic.setId(topicDto.getId());
+    topic.setName(topicDto.getName());
+    return topic;
   }
 }

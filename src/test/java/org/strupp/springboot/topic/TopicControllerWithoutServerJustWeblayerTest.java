@@ -15,11 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,6 +93,8 @@ public class TopicControllerWithoutServerJustWeblayerTest {
     dtos.add(dto);
     Optional<Topic> opt = Optional.of(topic);
     when(topicTransformer.toListOfTopicDto(any())).thenReturn(dtos);
+    when(topicTransformer.toTopicDto(any())).thenReturn(dto);
+    when(topicTransformer.toTopic(any())).thenReturn(topic);
     when(service.retrieveTopics()).thenReturn(topics);
     when(service.retrieveTopic(anyLong())).thenReturn(opt);
     when(service.createTopic(any(Topic.class))).thenAnswer((Answer<Topic>) invocationOnMock -> {
@@ -114,7 +115,7 @@ public class TopicControllerWithoutServerJustWeblayerTest {
   @Test
   public void postTopicTest() throws Exception {
     String content = StreamUtils
-        .copyToString(createJsonScript.getInputStream(), Charset.forName("UTF-8"));
+        .copyToString(createJsonScript.getInputStream(), StandardCharsets.UTF_8);
     mockMvc.perform(post(REQUESTURL).contentType(MediaType.APPLICATION_JSON).content(content))
         .andExpect(status().is2xxSuccessful());
     verify(service).createTopic(topicCaptor.capture());
@@ -123,11 +124,10 @@ public class TopicControllerWithoutServerJustWeblayerTest {
     assertThat(savedEntity.getId(), is(4L));
   }
 
-  //	@Ignore
   @Test
   public void updateTopicTest() throws Exception {
     String content = StreamUtils
-        .copyToString(updateJsonScript.getInputStream(), Charset.forName("UTF-8"));
+        .copyToString(updateJsonScript.getInputStream(), StandardCharsets.UTF_8);
     mockMvc.perform(put(REQUESTURL + "/4").contentType(MediaType.APPLICATION_JSON).content(content))
         .andExpect(status().is2xxSuccessful());
     verify(service).updateTopic(topicCaptor.capture());
@@ -138,7 +138,8 @@ public class TopicControllerWithoutServerJustWeblayerTest {
 
   @Test
   public void loadTopicTest() throws Exception {
-    this.mockMvc.perform(get("https://localhost:8443/topics/1"))
+    this.mockMvc.perform(get("https://localhost:8443/topics/1")
+        .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_UTF8))
@@ -168,10 +169,5 @@ public class TopicControllerWithoutServerJustWeblayerTest {
         .andExpect(jsonPath("$.topics", hasSize(1)))
         .andExpect(jsonPath("$.topics[0].id", is(5)))
         .andExpect(jsonPath("$.topics[0].name", is("Mockito")));
-  }
-
-  @After
-  public void createTodoItem() throws Exception {
-//        todoRepository.deleteAll();
   }
 }
