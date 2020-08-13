@@ -69,6 +69,9 @@ public class TopicControllerWithoutServerJustWeblayerTest {
   @Value("classpath:create_topic.json")
   private Resource createJsonScript;
 
+  @Value("classpath:create_topic_with_too_short_name.json")
+  private Resource topicWithTooShortName;
+
   @Value("classpath:update_topic.json")
   private Resource updateJsonScript;
 
@@ -111,7 +114,6 @@ public class TopicControllerWithoutServerJustWeblayerTest {
     });
   }
 
-  //	@Ignore
   @Test
   public void postTopicTest() throws Exception {
     String content = StreamUtils
@@ -122,6 +124,18 @@ public class TopicControllerWithoutServerJustWeblayerTest {
     Topic savedEntity = topicCaptor.getValue();
     assertThat(savedEntity.getName(), is("JSON"));
     assertThat(savedEntity.getId(), is(4L));
+  }
+
+  @Test
+  public void postTopicWithTooShortName() throws Exception {
+    String content = StreamUtils
+        .copyToString(topicWithTooShortName.getInputStream(), StandardCharsets.UTF_8);
+    mockMvc.perform(post(REQUESTURL).contentType(MediaType.APPLICATION_JSON).content(content))
+        .andExpect(status().is4xxClientError());
+//    verify(service).createTopic(topicCaptor.capture());
+//    Topic savedEntity = topicCaptor.getValue();
+//    assertThat(savedEntity.getName(), is("JSON"));
+//    assertThat(savedEntity.getId(), is(4L));
   }
 
   @Test
@@ -148,7 +162,6 @@ public class TopicControllerWithoutServerJustWeblayerTest {
     ;
   }
 
-  //    @Ignore
   @Test
   public void loadTopicsTest() throws Exception {
     this.mockMvc.perform(get("/topics"))

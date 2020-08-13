@@ -1,12 +1,14 @@
 package org.strupp.springboot.topic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.Size;
 
 public class TopicDto {
   @JsonProperty("id")
   private long id;
 
   @JsonProperty("name")
+  @Size(min=2, max=255)
   private String name;
 
   public TopicDto() {}
