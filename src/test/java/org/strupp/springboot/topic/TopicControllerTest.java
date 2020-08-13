@@ -109,28 +109,10 @@ public class TopicControllerTest {
 //    topicDto.setId(id);
     topicDto.setName("Blabla");
     when(topicService.createTopic(any())).thenReturn(topic);
-    ResponseEntity<TopicDto> topicResult = topicController.createTopic(topicDto, new MockHttpServletRequest());
+    ResponseEntity<TopicEnvelope> topicResult = topicController.createTopic(topicDto, new MockHttpServletRequest());
     assertThat(topicResult.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(Objects.requireNonNull(topicResult.getBody()).getName()).isEqualTo(topic.getName());
-    assertThat(Objects.requireNonNull(topicResult.getBody()).getId()).isEqualByComparingTo(id);
-//    assertThat(topicResult.getHeaders().getLocation().toString()).endsWith(String.valueOf(id));
-  }
-
-  @Test
-  public void createInvalidTopic() {
-    long id = 432L;
-    String tooShortName = "b";
-    Topic topic = new Topic();
-    topic.setId(id);
-    topic.setName(tooShortName);
-    TopicDto topicDto = new TopicDto();
-    //topicDto.setId(id);
-    topicDto.setName(tooShortName);
-    when(topicService.createTopic(any())).thenReturn(topic);
-    ResponseEntity<TopicDto> topicResult = topicController.createTopic(topicDto, new MockHttpServletRequest());
-    assertThat(topicResult.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(Objects.requireNonNull(topicResult.getBody()).getName()).isEqualTo(topic.getName());
-    assertThat(Objects.requireNonNull(topicResult.getBody()).getId()).isEqualByComparingTo(id);
+    assertThat(Objects.requireNonNull(topicResult.getBody().getTopicDto()).getName()).isEqualTo(topic.getName());
+    assertThat(Objects.requireNonNull(topicResult.getBody().getTopicDto()).getId()).isEqualByComparingTo(id);
 //    assertThat(topicResult.getHeaders().getLocation().toString()).endsWith(String.valueOf(id));
   }
 

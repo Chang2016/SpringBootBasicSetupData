@@ -84,12 +84,14 @@ public class TopicController {
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/topics/", produces = "application/json;charset=UTF-8")
-  public ResponseEntity<TopicDto> createTopic(@Valid @RequestBody TopicDto topicDto,
+  public ResponseEntity<TopicEnvelope> createTopic(@Valid @RequestBody TopicDto topicDto,
       HttpServletRequest request) {
+    TopicEnvelope topicEnvelope = new TopicEnvelope();
     Topic topic = topicTransformer.toTopic(topicDto);
     Topic t = topicService.createTopic(topic);
     TopicDto resultDto = topicTransformer.toTopicDto(t);
-    return new ResponseEntity<>(resultDto, HttpStatus.CREATED);
+    topicEnvelope.setTopicDto(resultDto);
+    return new ResponseEntity<>(topicEnvelope, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.PUT, value = "/topics/{id}", produces = "application/json;charset=UTF-8")
