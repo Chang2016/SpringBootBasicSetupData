@@ -110,11 +110,11 @@ public class TopicController {
     return new ResponseEntity<>(resultDto, HttpStatus.OK);
   }
 
-  @RequestMapping(method = RequestMethod.DELETE, value = "/topics/{id}")
-  public void deleteTopic(@PathVariable long id, HttpServletRequest request,
+  @RequestMapping(method = RequestMethod.DELETE, value = "/topics/{id}", produces = "application/json;charset=UTF-8")
+  public ResponseEntity<Long> deleteTopic(@PathVariable long id, HttpServletRequest request,
       HttpServletResponse response) {
     topicService.deleteTopic(id);
-    response.setStatus(HttpServletResponse.SC_ACCEPTED);
+    return new ResponseEntity<>(id, HttpStatus.OK);
   }
 
 }

@@ -2,6 +2,9 @@ package org.strupp.springboot.topic;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,6 +90,15 @@ public class TopicControllerWithoutServerIT {
 
   @Test
   @Transactional
+  public void writeTopicWithTooShortNameTest() throws Exception {
+    String content = StreamUtils
+        .copyToString(topicWithTooShortName.getInputStream(), StandardCharsets.UTF_8);
+    this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @Test
+  @Transactional
   public void updateTopicTest() throws Exception {
     String content = StreamUtils
         .copyToString(updateJsonScript.getInputStream(), StandardCharsets.UTF_8);
@@ -113,5 +125,18 @@ public class TopicControllerWithoutServerIT {
     this.mockMvc.perform(get("/topics/1"))
         .andDo(print())
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @Transactional
+  public void deleteNonExistingTopicTest() throws Exception {
+    this.mockMvc.perform(delete("/topics/1123").contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+//        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//        .andExpect(jsonPath("$.timestamp", not(isEmptyString())))
+//        .andExpect(jsonPath("$.status", is("404")))
+//        .andExpect(jsonPath("$.error", is("Not Found")))
+//        .andExpect(jsonPath("$.message", is("No class org.strupp.springboot.topic.Topic entity with id 1123 exists!")))
+//        .andExpect(jsonPath("$.path", is("/topics/1123")));
   }
 }

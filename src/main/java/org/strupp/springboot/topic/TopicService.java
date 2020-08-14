@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.strupp.springboot.exceptions.ResourceNotFoundException;
 
 @Service
 public class TopicService {
@@ -63,13 +65,13 @@ public class TopicService {
 	}
 	
 	public void deleteTopic(long id) {
-//		try {
+		try {
 			topicRepository.deleteById(id);
-//		} catch (Exception e) {
-//			if(e instanceof ConstraintViolationException)
-//				throw e;
-//			else
-//				throw new ResourceNotFoundException(e.getMessage());
-//		}
+		} catch (Exception e) {
+			if(e instanceof ConstraintViolationException)
+				throw e;
+			else
+				throw new ResourceNotFoundException(e.getMessage());
+		}
 	}
 }
