@@ -20,7 +20,9 @@ CREATE TABLE course (
   id BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NULL DEFAULT NULL,
   start_date DATE NULL DEFAULT NULL,
-  topic_id BIGINT(20) NULL DEFAULT NULL
+  topic_id BIGINT(20),
+  CONSTRAINT fk_course_topic FOREIGN KEY (topic_id)
+  REFERENCES topic(id)
 );
 
 
