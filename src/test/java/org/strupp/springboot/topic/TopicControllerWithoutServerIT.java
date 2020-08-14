@@ -54,6 +54,9 @@ public class TopicControllerWithoutServerIT {
   @Value("classpath:update_topic.json")
   private Resource updateJsonScript;
 
+  @Value("classpath:create_topic_with_existing_name.json")
+  private Resource topicWithExistingName;
+
   //	Es wird gegen den tatsächlichen Wert in der DB getestet
   @Test
   public void findNonExistingTopic() throws Exception {
@@ -95,6 +98,15 @@ public class TopicControllerWithoutServerIT {
         .copyToString(topicWithTooShortName.getInputStream(), StandardCharsets.UTF_8);
     this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
         .andExpect(status().is4xxClientError());
+  }
+
+  @Test
+  @Transactional
+  public void writeTopicWithAlreadyExistingTopicName() throws Exception {
+    String content = StreamUtils
+        .copyToString(topicWithExistingName.getInputStream(), StandardCharsets.UTF_8);
+    this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
+        .andExpect(status().isBadRequest());
   }
 
   @Test

@@ -14,16 +14,17 @@ public class PersistenceExceptionHandler {
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	@ResponseBody
-	public ResponseEntity<String> conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+	public ResponseEntity<Object> conflict(HttpServletRequest req, DataIntegrityViolationException e) {
 		Throwable th = e.getCause();
-		StringBuilder res = new StringBuilder();
+		ApiErrorResponse response = new ApiErrorResponse.ApiErrorResponseBuilder().build();
 		if (th instanceof ConstraintViolationException) {
 			ConstraintViolationException cve = (ConstraintViolationException) th;
-			res.append(cve.getMessage());
-			res.append("\nSQLState: " + cve.getSQLState());
-			res.append("\nSQL: " + cve.getSQL());
-			res.append("\nErrorCode: " + cve.getErrorCode());
+			response = new ApiErrorResponse.ApiErrorResponseBuilder()
+					.withStatus(HttpStatus.BAD_REQUEST)
+					.withError_code(cve.getSQLException().getSQLState())
+					.withMessage(cve.getMessage())
+					.withDetail(cve.getSQLException().getMessage()).build();
 		}
-		return new ResponseEntity<String>(res.toString(), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }

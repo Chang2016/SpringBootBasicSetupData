@@ -21,7 +21,7 @@
 
 LOCK TABLES `topic` WRITE;
 /*!40000 ALTER TABLE `topic` DISABLE KEYS */;
-INSERT INTO `topic` VALUES (1,'Chemie'),(2,'SpringMVC'),(4,'Englisch'),(5,'Klassik'),(6,'Pop'),(7,'Java'),(8,'JavaScript'),(15,'Json'),(34,'Philosophie'),(35,'Psychologie'),(37,'Chemie'),(40,'Physik'),(41,'JSON2'),(42,'Boxen'),(43,'JSON2'),(44,'JSON2'),(45,'JSON2');
+INSERT INTO `topic` VALUES (1,'Chemie'),(2,'SpringMVC'),(4,'Englisch'),(5,'Klassik'),(6,'Pop'),(7,'Java'),(8,'JavaScript'),(15,'Json'),(34,'Philosophie'),(35,'Psychologie'),(40,'Physik'),(41,'JSON2'),(42,'Boxen');
 /*!40000 ALTER TABLE `topic` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
