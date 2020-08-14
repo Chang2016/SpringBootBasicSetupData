@@ -58,19 +58,20 @@ public class TopicController {
 
   //	automatische Serialisierung nach JSON
   @RequestMapping("/topics")
-  public TopicList retrieveTopics() {
+  public ResponseEntity<TopicList> retrieveTopics() {
     List<Topic> topics = topicService.retrieveTopics();
     List<TopicDto> topicDtos = topicTransformer.toListOfTopicDto(topics);
-    return new TopicList(topicDtos);
+    return new ResponseEntity<>(new TopicList(topicDtos), HttpStatus.OK);
   }
 
   @GetMapping("topicsstartingwith/{subs}")
-  public TopicList retrieveTopicsStartingWith(@PathVariable String subs) {
-    return topicService.retrieveTopicsStartingWith(subs);
+  public ResponseEntity<TopicList> retrieveTopicsStartingWith(@PathVariable String subs) {
+    TopicList topicList = topicService.retrieveTopicsStartingWith(subs);
+    return new ResponseEntity<>(topicList, HttpStatus.OK);
   }
 
   @RequestMapping("/topics/delayed")
-  public TopicList retrieveTopicsDelayed(@RequestHeader HttpHeaders headers) {
+  public ResponseEntity<TopicList> retrieveTopicsDelayed(@RequestHeader HttpHeaders headers) {
     try {
       TimeUnit.SECONDS.sleep(1);
     } catch (InterruptedException e) {
@@ -79,14 +80,15 @@ public class TopicController {
     }
     List<Topic> topics = topicService.retrieveTopics();
     List<TopicDto> topicDtos = topicTransformer.toListOfTopicDto(topics);
-    return new TopicList(topicDtos);
+    return new ResponseEntity<>(new TopicList(topicDtos), HttpStatus.OK);
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/topics/{id}")
-  public TopicDto retrieveTopic(@PathVariable long id, @RequestHeader HttpHeaders headers) {
+  public ResponseEntity<TopicDto> retrieveTopic(@PathVariable long id, @RequestHeader HttpHeaders headers) {
     Optional<Topic> opt = topicService.retrieveTopic(id);
-    return topicTransformer.toTopicDto(opt
+    TopicDto topicDto = topicTransformer.toTopicDto(opt
         .orElseThrow(() -> new ResourceNotFoundException("No Topic with id " + id + " found.")));
+    return new ResponseEntity<>(topicDto, HttpStatus.OK);
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/topics/", produces = "application/json;charset=UTF-8")

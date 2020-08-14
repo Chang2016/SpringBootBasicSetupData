@@ -56,9 +56,10 @@ public class TopicControllerTest {
     List<Topic> topics = new ArrayList<>();
     topics.add(topic);
     when(topicService.retrieveTopics()).thenReturn(topics);
-    TopicList topicList = topicController.retrieveTopics();
-    assertThat(topicList.getTopics().size()).isEqualTo(1);
-    List<TopicDto> listOfTopics = topicList.getTopics();
+    ResponseEntity<TopicList> responseEntity = topicController.retrieveTopics();
+    List<TopicDto> listOfTopics = Objects.requireNonNull(responseEntity.getBody()).getTopics();
+    assertThat(listOfTopics.size()).isEqualTo(1);
+//    List<TopicDto> listOfTopics = topicList.getTopics();
     assertThat(listOfTopics.size()).isEqualTo(1);
     TopicDto topicDto = listOfTopics.get(0);
     assertThat(topicDto.getId()).isEqualTo(topic.getId());
@@ -73,7 +74,9 @@ public class TopicControllerTest {
     List<Topic> topics = new ArrayList<>();
     topics.add(topic);
     when(topicService.retrieveTopics()).thenReturn(topics);
-    TopicList topicList = topicController.retrieveTopicsDelayed(HttpHeaders.EMPTY);
+    ResponseEntity<TopicList> responseEntity = topicController
+        .retrieveTopicsDelayed(HttpHeaders.EMPTY);
+    TopicList topicList = responseEntity.getBody();
     assertThat(topicList.getTopics().size()).isEqualTo(1);
     List<TopicDto> listOfTopics = topicList.getTopics();
     assertThat(listOfTopics.size()).isEqualTo(1);
@@ -88,7 +91,9 @@ public class TopicControllerTest {
     topic.setId(1L);
     topic.setName("Blabla");
     when(topicService.retrieveTopic(topic.getId())).thenReturn(Optional.of(topic));
-    TopicDto topicResult = topicController.retrieveTopic(topic.getId(), HttpHeaders.EMPTY);
+    ResponseEntity<TopicDto> topicDtoResponseEntity = topicController
+        .retrieveTopic(topic.getId(), HttpHeaders.EMPTY);
+    TopicDto topicResult = topicDtoResponseEntity.getBody();
     assertThat(topicResult.getId()).isEqualTo(topic.getId());
     assertThat(topicResult.getName()).isEqualTo(topic.getName());
   }
