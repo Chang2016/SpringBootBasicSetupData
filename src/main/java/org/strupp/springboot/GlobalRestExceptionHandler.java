@@ -13,23 +13,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
-//	@ExceptionHandler(HttpMessageNotWritableException.class)
   public ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
     ApiErrorResponse response = new ApiErrorResponse.ApiErrorResponseBuilder()
         .withStatus(status)
-        .withError_code(HttpStatus.BAD_REQUEST.name())
+        .withErrorCode(HttpStatus.BAD_REQUEST.name())
         .withMessage(ex.getLocalizedMessage()).build();
     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
   }
 
   @Override
-//	@ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
     ApiErrorResponse response = new ApiErrorResponse.ApiErrorResponseBuilder()
         .withStatus(status)
-        .withError_code(HttpStatus.BAD_REQUEST.name())
+        .withErrorCode(HttpStatus.BAD_REQUEST.name())
         .withMessage(ex.getLocalizedMessage()).build();
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }

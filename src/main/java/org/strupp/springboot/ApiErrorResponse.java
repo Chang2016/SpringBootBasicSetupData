@@ -6,68 +6,70 @@ import org.springframework.http.HttpStatus;
 
 public class ApiErrorResponse {
 
-	private HttpStatus status;
-	private String error_code;
-	private String message;
-	private String detail;
+  private HttpStatus status;
+  private String errorCode;
+  private String message;
+  private String detail;
 
-	// getter and setters
-	// Builder
-	public static final class ApiErrorResponseBuilder {
-		private HttpStatus status;
-		private String error_code;
-		private String message;
-		private String detail;
+  // getter and setters
+  // Builder
+  public static final class ApiErrorResponseBuilder {
 
-		ApiErrorResponseBuilder() {}
+    private HttpStatus status;
+    private String errorCode;
+    private String message;
+    private String detail;
 
-		public static ApiErrorResponseBuilder anApiErrorResponse() {
-			return new ApiErrorResponseBuilder();
-		}
+    ApiErrorResponseBuilder() {
+    }
 
-		public ApiErrorResponseBuilder withStatus(HttpStatus status) {
-			this.status = status;
-			return this;
-		}
+    public static ApiErrorResponseBuilder anApiErrorResponse() {
+      return new ApiErrorResponseBuilder();
+    }
 
-		public ApiErrorResponseBuilder withError_code(String error_code) {
-			this.error_code = error_code;
-			return this;
-		}
+    public ApiErrorResponseBuilder withStatus(HttpStatus status) {
+      this.status = status;
+      return this;
+    }
 
-		public ApiErrorResponseBuilder withMessage(String message) {
-			this.message = message;
-			return this;
-		}
+    public ApiErrorResponseBuilder withErrorCode(String errorCode) {
+      this.errorCode = errorCode;
+      return this;
+    }
 
-		public ApiErrorResponseBuilder withDetail(String detail) {
-			this.detail = detail;
-			return this;
-		}
+    public ApiErrorResponseBuilder withMessage(String message) {
+      this.message = message;
+      return this;
+    }
 
-		public ApiErrorResponse build() {
-			ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
-			apiErrorResponse.status = this.status;
-			apiErrorResponse.error_code = this.error_code;
-			apiErrorResponse.detail = this.detail;
-			apiErrorResponse.message = this.message;
-			return apiErrorResponse;
-		}
-	}
+    public ApiErrorResponseBuilder withDetail(String detail) {
+      this.detail = detail;
+      return this;
+    }
 
-	public HttpStatus getStatus() {
-		return status;
-	}
+    public ApiErrorResponse build() {
+      ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
+      apiErrorResponse.status = this.status;
+      apiErrorResponse.errorCode = this.errorCode;
+      apiErrorResponse.detail = this.detail;
+      apiErrorResponse.message = this.message;
+      return apiErrorResponse;
+    }
+  }
 
-	public String getError_code() {
-		return error_code;
-	}
+  public HttpStatus getStatus() {
+    return status;
+  }
 
-	public String getMessage() {
-		return message;
-	}
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-	public String getDetail() {
-		return detail;
-	}
+  public String getMessage() {
+    return message;
+  }
+
+  public String getDetail() {
+    return detail;
+  }
 }

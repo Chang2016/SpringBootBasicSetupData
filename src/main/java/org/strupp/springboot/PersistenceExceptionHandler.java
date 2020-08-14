@@ -21,7 +21,7 @@ public class PersistenceExceptionHandler {
 			ConstraintViolationException cve = (ConstraintViolationException) th;
 			response = new ApiErrorResponse.ApiErrorResponseBuilder()
 					.withStatus(HttpStatus.BAD_REQUEST)
-					.withError_code(cve.getSQLException().getSQLState())
+					.withErrorCode(cve.getSQLException().getSQLState())
 					.withMessage(cve.getMessage())
 					.withDetail(cve.getSQLException().getMessage()).build();
 		}
