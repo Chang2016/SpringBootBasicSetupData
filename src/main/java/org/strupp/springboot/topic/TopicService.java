@@ -26,9 +26,14 @@ public class TopicService {
 	}
 	
 	public List<Topic> retrieveTopics() {
-		return (List<Topic>) topicRepository.findAll();
+		return topicRepository.findAll();
 	}
-	
+
+	public TopicList retrieveTopicsStartingWith(String subs) {
+		List<TopicDto> topics = topicRepository.findByNameStartingWith(subs);
+		return new TopicList(topics);
+	}
+
 	public Optional<Topic> retrieveTopic(long id) {
 		return topicRepository.findById(id);
 	}

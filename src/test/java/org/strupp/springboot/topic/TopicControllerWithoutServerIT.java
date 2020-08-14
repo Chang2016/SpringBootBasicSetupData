@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,11 +59,18 @@ public class TopicControllerWithoutServerIT {
   }
 
   @Test
-//    sorgt dafür dass TransactionalTestExecutionListener die Transaktion zurückrollt, also die DB nicht geändert wird
+  public void findTopicStartingWith() throws Exception {
+    this.mockMvc.perform(get("/topicsstartingwith/Re"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("Religion")));
+  }
+
+  @Test
   @Transactional
   public void writeTopicTest() throws Exception {
     String content = StreamUtils
-        .copyToString(createJsonScript.getInputStream(), Charset.forName("UTF-8"));
+        .copyToString(createJsonScript.getInputStream(), StandardCharsets.UTF_8);
     this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
         .andExpect(status().is2xxSuccessful());
   }
