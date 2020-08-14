@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -67,11 +67,12 @@ public class TopicService {
 	public void deleteTopic(long id) {
 		try {
 			topicRepository.deleteById(id);
-		} catch (Exception e) {
-			if(e instanceof ConstraintViolationException)
-				throw e;
-			else
-				throw new ResourceNotFoundException(e.getMessage());
+		} catch(ConstraintViolationException e) {
+			throw e;
+		} catch(DataIntegrityViolationException e) {
+			throw e;
+		} catch(Exception e) {
+			throw new ResourceNotFoundException(e.getMessage());
 		}
 	}
 }
