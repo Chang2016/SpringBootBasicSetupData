@@ -1,11 +1,12 @@
 package org.strupp.springboot.topic;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -33,6 +34,13 @@ class TopicTestContainerJUnit5NextTryIT {
   void findAllTopics() {
     List<Topic> all = topicRepository.findAll();
     assertThat(all.size()).isEqualTo(1);
+  }
+
+  @Test
+  void deleteTopicReferencingCourses() {
+    assertThrows(DataIntegrityViolationException.class, () -> {
+      topicRepository.deleteById(1L);
+    });
   }
 
   @DynamicPropertySource
