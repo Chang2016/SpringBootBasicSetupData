@@ -2,9 +2,6 @@ package org.strupp.springboot.topic;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
+import org.strupp.springboot.integration.FullIntegrationTest;
 
 /*
  * Dieser Test startet nicht den Server, Spring nimmt den HTTP-Request entgegen und testet Controller, DAO,...
@@ -37,7 +35,7 @@ import org.springframework.util.StreamUtils;
 @SpringBootTest  //bootstraps whole ApplicationContext
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
-public class TopicControllerWithoutServerIT {
+public class TopicControllerWithoutServerIT extends FullIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -50,6 +48,9 @@ public class TopicControllerWithoutServerIT {
 
   @Value("classpath:create_topic_with_too_short_name.json")
   private Resource topicWithTooShortName;
+
+  @Value("classpath:create_topic_with_too_long_name.json")
+  private Resource topicWithTooLongName;
 
   @Value("classpath:update_topic.json")
   private Resource updateJsonScript;
@@ -96,6 +97,15 @@ public class TopicControllerWithoutServerIT {
   public void writeTopicWithTooShortNameTest() throws Exception {
     String content = StreamUtils
         .copyToString(topicWithTooShortName.getInputStream(), StandardCharsets.UTF_8);
+    this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @Test
+  @Transactional
+  public void writeTopicWithTooLongNameTest() throws Exception {
+    String content = StreamUtils
+        .copyToString(topicWithTooLongName.getInputStream(), StandardCharsets.UTF_8);
     this.mockMvc.perform(post("/topics/").contentType(MediaType.APPLICATION_JSON).content(content))
         .andExpect(status().is4xxClientError());
   }
