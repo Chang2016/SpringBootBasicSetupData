@@ -12,6 +12,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.strupp.springboot.integration.FullIntegrationTest;
 
 
 @RunWith(SpringRunner.class)
@@ -19,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 //startet den Webserver zum Test
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "test")
-public class TopicControllerWithoutMockingIT {
+public class TopicControllerWithoutMockingIT extends FullIntegrationTest {
 
   @LocalServerPort
   private int port;

@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.strupp.springboot.integration.FullIntegrationTest;
 import org.strupp.springboot.model.student.Student;
 import org.strupp.springboot.topic.Topic;
 import org.strupp.springboot.topic.TopicRepository;
@@ -64,7 +65,7 @@ import org.strupp.springboot.topic.TopicRepository;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "test")
 @AutoConfigureMockMvc
-public class CourseControllerIT {
+public class CourseControllerIT extends FullIntegrationTest {
 
   @Autowired
   private WebApplicationContext wac;
@@ -79,9 +80,6 @@ public class CourseControllerIT {
 
   @Autowired
   private TopicRepository topicRepository;
-
-  @Value("${spring.datasource.driverClassName}")
-  private String datasourceName;
 
   @Value("classpath:course.json")
   private Resource courseJsonScript;
@@ -98,11 +96,6 @@ public class CourseControllerIT {
   @Before
   public void init() {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-  }
-
-  @Test
-  public void checkIfTestEnvironmentIsLoaded() {
-    assertThat(datasourceName, is("org.h2.Driver"));
   }
 
   @Test

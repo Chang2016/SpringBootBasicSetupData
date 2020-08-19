@@ -7,8 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.strupp.springboot.integration.DatabaseIntegrationTest;
 
 /*
  * @DataJpaTest provides some standard setup needed for testing the persistence layer:
@@ -19,8 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "test")
-@DataJpaTest
-public class CourseRepositoryTest {
+@SpringBootTest
+public class CourseRepositoryTest extends DatabaseIntegrationTest {
 
   @Autowired
   private CourseRepository repository;
