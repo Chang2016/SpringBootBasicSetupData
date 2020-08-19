@@ -9,13 +9,11 @@ public final class Initializer implements ApplicationContextInitializer<Configur
 
   @Override
   public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
-    MySQLContainerTestJava.getjMySQLContainer().start();
+    MySQLContainerTestJava.getJMySQLContainer().start();
     TestPropertyValues values =
         TestPropertyValues.of(
-            new String[] {
-                "spring.datasource.url="
-                  + MySQLContainerTestJava.getjMySQLContainer().getJdbcUrl()
-            });
+            "spring.datasource.url="
+              + MySQLContainerTestJava.getJMySQLContainer().getJdbcUrl());
     values.applyTo(applicationContext);
   }
 }

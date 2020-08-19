@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,6 +16,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+//@DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest
 @ActiveProfiles(profiles="test")
 @Testcontainers
@@ -38,9 +42,7 @@ class TopicTestContainerJUnit5NextTryIT {
 
   @Test
   void deleteTopicReferencingCourses() {
-    assertThrows(DataIntegrityViolationException.class, () -> {
-      topicRepository.deleteById(1L);
-    });
+    assertThrows(DataIntegrityViolationException.class, () -> topicRepository.deleteById(1L));
   }
 
   @DynamicPropertySource
