@@ -8,8 +8,8 @@ public class MySQLContainerTestJava {
   @Container
   private static final JMySQLContainer jMySQLContainer;
   static {
-    MySQLContainer container = ((JMySQLContainer) (new JMySQLContainer("mysql:latest"))
-    .withUsername("root")).withPassword("1234");
+    MySQLContainer container = ((JMySQLContainer) (new JMySQLContainer("mysql:8.0"))
+    .withDatabaseName("topic_db2").withUsername("root")).withPassword("1234");
     jMySQLContainer = (JMySQLContainer) container;
   }
 

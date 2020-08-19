@@ -19,7 +19,7 @@ class TopicTestContainerJUnit5IT extends DatabaseIntegrationTest {
   TopicRepository topicRepository;
 
   @Test
-  void findExistingTopic() {
+  void findExistingTopicUsingTopicRepository() {
     List<Topic> all = topicRepository.findAll();
     assertThat(all.size()).isEqualTo(1);
   }

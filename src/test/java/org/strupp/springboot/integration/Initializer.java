@@ -13,7 +13,7 @@ public final class Initializer implements ApplicationContextInitializer<Configur
     TestPropertyValues values =
         TestPropertyValues.of(
             new String[] {
-                "spring.datasource.url"
+                "spring.datasource.url="
                   + MySQLContainerTestJava.getjMySQLContainer().getJdbcUrl()
             });
     values.applyTo(applicationContext);
