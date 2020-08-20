@@ -23,3 +23,5 @@ In IntelliJ:
 Preferences->Tools->Server Certificates importieren und Haken setzen bei
 accept non-trusted certificates automtacally
 
+###Integrationstests mit testcontainers und mysql statt h2
+
