@@ -5,13 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -29,6 +28,9 @@ class TopicTestContainerJUnit5NextTryIT {
   @Autowired
   private TopicRepository topicRepository;
 
+  @Autowired
+  private TopicService topicService;
+
   @Test
   void smoke() {
     assertThat(1).isEqualTo(1);
@@ -37,12 +39,13 @@ class TopicTestContainerJUnit5NextTryIT {
   @Test
   void findAllTopics() {
     List<Topic> all = topicRepository.findAll();
-    assertThat(all.size()).isEqualTo(1);
+    assertThat(all.size()).isEqualTo(2);
   }
 
   @Test
+//  @Transactional
   void deleteTopicReferencingCourses() {
-    assertThrows(DataIntegrityViolationException.class, () -> topicRepository.deleteById(1L));
+    assertThrows(DataIntegrityViolationException.class, () -> topicService.deleteTopic(1L));
   }
 
   @DynamicPropertySource

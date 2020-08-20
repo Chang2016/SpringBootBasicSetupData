@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -111,8 +112,8 @@ public class CourseControllerIT extends FullIntegrationTest {
 
   @Test
   public void testInitialization() {
-    List<Topic> topics = topicRepository.findAll();
-    assertThat(topics.size(), is(1));
+    List<Topic> topics = topicRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    assertThat(topics.size(), is(2));
     Topic topic = topics.get(0);
     assertThat(topic.getId(), is(1L));
     assertThat(topic.getName(), is("Religion"));

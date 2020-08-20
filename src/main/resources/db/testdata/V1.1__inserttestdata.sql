@@ -25,3 +25,7 @@ VALUES
 INSERT INTO course_student
 VALUES
 (1, 1);
+
+INSERT INTO topic
+VALUES
+(2, 'TopicWithoutACourse');

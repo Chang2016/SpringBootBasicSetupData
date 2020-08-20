@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import org.strupp.springboot.integration.DatabaseIntegrationTest;
@@ -20,7 +21,7 @@ class TopicTestContainerJUnit5IT extends DatabaseIntegrationTest {
 
   @Test
   void findExistingTopicUsingTopicRepository() {
-    List<Topic> all = topicRepository.findAll();
-    assertThat(all.size()).isEqualTo(1);
+    List<Topic> all = topicRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    assertThat(all.size()).isEqualTo(2);
   }
 }
