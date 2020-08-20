@@ -21,5 +21,5 @@ ein p12-Zertifikat kann gleichzeitig trustore sein siehe application.properties
 
 In IntelliJ:
 Preferences->Tools->Server Certificates importieren und Haken setzen bei
-accept non-trusted certificates automtacally
+accept non-trusted certificates automtically
 
