@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.chang.springboot.model.student.Student;
-import org.chang.springboot.model.student.StudentRepository;
+import org.chang.springboot.student.Student;
+import org.chang.springboot.student.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,10 @@ public class CourseService {
 
 	@Autowired
 	private CourseRepository courseRepository;
-	
+
+	@Autowired
+	private CourseStatusValidator courseStatusValidator;
+
 	public Page<Course> retrieveCourses(int p, int size) {
 		Pageable page = PageRequest.of(p, size);
 		Page<Course> res = courseRepository.findAll(page);
@@ -39,13 +42,21 @@ public class CourseService {
 	}
 	
 	@Transactional
-	public Student addStudent(long courseId, Student student) {
-		Optional<Course> course = courseRepository.findById(courseId);
-		course.ifPresent(c -> c.addStudent(student));
-		Student result = studentRepository.save(student);
-		return result;
+	public CourseResult addStudent(long courseId, Student student) {
+		Optional<Course> maybeCourse = courseRepository.findById(courseId);
+		CourseStatusEnum courseStatusEnum = courseStatusValidator.checkCourse(maybeCourse, student);
+		if(courseStatusEnum == CourseStatusEnum.OK) {
+			if (maybeCourse.isPresent()) {
+				Course course = maybeCourse.get();
+				Student result = studentRepository.save(student);
+				course.addStudent(result);
+				Course save = courseRepository.save(course);
+				return CourseResult.builder().error(false).course(save).courseStatusEnum(courseStatusEnum).build();
+			}
+		}
+		return CourseResult.builder().error(true).courseStatusEnum(courseStatusEnum).build();
 	}
-	
+
 	public List<Course> retrieveCoursesByTopicName(String topicName) {
 		return customCourseRepository.getCoursesHavingTopic(topicName);
 	}

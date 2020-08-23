@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-import org.chang.springboot.model.student.Student;
+import org.chang.springboot.student.Student;
 import org.chang.springboot.topic.Topic;
 import org.chang.springboot.topic.TopicRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,9 @@ public class CourseControllerIT extends FullIntegrationTest {
 
   @Value("classpath:update_course_newStudentlist.json")
   private Resource updateCourseJsonScript;
+
+  @Value("classpath:update_course_too_many_students.json")
+  private Resource updateCourseWithTooManyStudents;
 
   @Value("classpath:update_course_no_topic.json")
   private Resource updateCourseNoTopicJsonScript;
@@ -186,6 +190,19 @@ public class CourseControllerIT extends FullIntegrationTest {
     Set<Student> students = course.getStudents();
     assertThat(students.size(), is(1));
     assertThat(students.iterator().next().getName(), is("UpdatedMüller"));
+  }
+
+//  @Ignore
+  @Test
+  @Transactional
+  public void postTooManyStudentsIntoCourse() throws Exception {
+    String content = StreamUtils
+        .copyToString(updateCourseWithTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
+    mockMvc.perform(post("https://localhost:" + port + "/courses/1/students/")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content))
+        .andDo(print())
+        .andExpect(status().isBadRequest());
   }
 
   @Test

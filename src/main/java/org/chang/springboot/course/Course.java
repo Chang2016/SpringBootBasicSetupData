@@ -15,7 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
-import org.chang.springboot.model.student.Student;
+import org.chang.springboot.student.Student;
 import org.chang.springboot.topic.Topic;
 
 @Entity
@@ -28,7 +28,7 @@ public class Course {
 	private LocalDate startDate;
 	@ManyToOne
 	private Topic topic;
-	
+	private int size;
 //	Wenn CascadeType.REMOVE in der Relation verwendet wird, wird nicht nur der Eintrag in der JoinTable gelöscht, sondern 
 //	auch der Student, wenn zusätzlich auf der Student Seite auch CascadeType.REMOVE verwendet wird, wird auch der 
 //	Course gelöscht.
@@ -50,11 +50,13 @@ public class Course {
 	private Set<Student> students = new HashSet<>();
 	
 	public Course() {}
-	public Course(long id, String name, LocalDate startDate) {
+
+	public Course(long id, String name, LocalDate startDate, int size) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
+		this.size = size;
 	}
 	
 	public void addStudent(Student student) {
@@ -100,5 +102,13 @@ public class Course {
 	}
 	public Set<Student> getStudents() {
 		return students;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 }

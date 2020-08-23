@@ -1,4 +1,4 @@
-package org.chang.springboot.model.student;
+package org.chang.springboot.student;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -65,5 +65,9 @@ public class Student {
 //	}
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

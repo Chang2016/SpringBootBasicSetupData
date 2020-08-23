@@ -1,4 +1,4 @@
-package org.chang.springboot.model.student;
+package org.chang.springboot.student;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
