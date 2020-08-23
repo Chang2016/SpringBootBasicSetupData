@@ -20,7 +20,7 @@ public class CourseTransformer {
 
   public CourseDto toCourseDto(Course course) {
     Set<StudentDto> studentDtos = studentTransformer.toSetOfStudentDto(course.getStudents());
-    return CourseDto.builder().id(course.getId()).name(course.getName()).startDate(course.getStartDate()).students(studentDtos).build();
+    return CourseDto.builder().id(course.getId()).name(course.getName()).startDate(course.getStartDate()).size(course.getSize()).students(studentDtos).build();
   }
 
   public Course toCourse(CourseDto courseDto) {
@@ -40,6 +40,7 @@ public class CourseTransformer {
         course.addStudent(s);
       }
     }
+    course.setSize(courseDto.getSize());
     return course;
   }
 }

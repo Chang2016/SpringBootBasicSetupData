@@ -3,6 +3,7 @@ package org.chang.springboot.course;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,7 +26,6 @@ import org.chang.springboot.student.Student;
 import org.chang.springboot.topic.Topic;
 import org.chang.springboot.topic.TopicRepository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,7 +192,27 @@ public class CourseControllerIT extends FullIntegrationTest {
     assertThat(students.iterator().next().getName(), is("UpdatedMüller"));
   }
 
-//  @Ignore
+  @Test
+  @Transactional
+  public void addStudent() throws Exception {
+    String content = StreamUtils
+        .copyToString(updateCourseWithTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
+    mockMvc.perform(post("https://localhost:" + port + "/courses/2/students/")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.courseDto", is(notNullValue())))
+        .andExpect(jsonPath("$.courseDto.id", is(2)))
+        .andExpect(jsonPath("$.courseDto.name", is("Islam")))
+        .andExpect(jsonPath("$.courseDto.startDate", is("2019-11-08")))
+        .andExpect(jsonPath("$.courseDto.size", is(5)))
+        .andExpect(jsonPath("$.courseDto.students", is(notNullValue())))
+        .andExpect(jsonPath("$.courseDto.students[0].name", is("MyNewStudent")))
+        .andExpect(jsonPath("$.courseDto.students[0].birthday", is("1977-06-03")))
+        .andExpect(jsonPath("$.errorMessageDto", is(nullValue())));
+  }
+
   @Test
   @Transactional
   public void postTooManyStudentsIntoCourse() throws Exception {
