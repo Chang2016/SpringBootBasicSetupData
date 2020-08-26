@@ -24,4 +24,6 @@ Preferences->Tools->Server Certificates importieren und Haken setzen bei
 accept non-trusted certificates automtically
 
 ###Integrationstests mit testcontainers und mysql statt h2
+RepositoryTests müssen von DatabaseIntegrationTest ableiten
+EndToEndTests müssen von FullIntegrationTest ableiten
 
