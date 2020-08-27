@@ -2,6 +2,7 @@ package org.chang.springboot.course;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.ZoneId;
 import java.util.List;
 import org.chang.springboot.integration.DatabaseIntegrationTest;
 import org.junit.Test;
@@ -55,13 +56,15 @@ public class CourseRepositoryTest extends DatabaseIntegrationTest {
     List<Course> found = repository.findByName("Christentum");
     assertThat(found.size()).isEqualTo(1);
     Course christ = found.get(0);
-    long createdMillis = christ.getCreated().getTime();
+    long createdMillis = christ.getCreated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     //when
     christ.setName("Judentum");
     Course save = repository.save(christ);
     // then
-    assertThat(save.getCreated().getTime()).isEqualTo(createdMillis);
-    assertThat(save.getCreated().getTime()).isLessThanOrEqualTo(save.getUpdated().getTime());
+    assertThat(save.getCreated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).isEqualTo(createdMillis);
+    assertThat(save.getCreated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).isLessThanOrEqualTo(save.getUpdated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+//    assertThat(save.getCreated().getTime()).isEqualTo(createdMillis);
+//    assertThat(save.getCreated().getTime()).isLessThanOrEqualTo(save.getUpdated().getTime());
   }
 
 }
