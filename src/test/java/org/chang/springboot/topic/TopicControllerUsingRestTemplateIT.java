@@ -20,7 +20,7 @@ import org.chang.springboot.integration.FullIntegrationTest;
 //startet den Webserver zum Test
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "test")
-public class TopicControllerWithoutMockingIT extends FullIntegrationTest {
+public class TopicControllerUsingRestTemplateIT extends FullIntegrationTest {
 
   @LocalServerPort
   private int port;

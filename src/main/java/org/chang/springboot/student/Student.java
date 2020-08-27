@@ -17,14 +17,14 @@ import javax.persistence.ManyToMany;
 import org.chang.springboot.course.Course;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.chang.springboot.model.BaseEntity;
 
 @Entity
-public class Student {
+public class Student extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@Basic
-	private Instant created;
+
 	@Column(nullable = false)
 	private String name;
 	@Basic
@@ -39,12 +39,6 @@ public class Student {
 	public Student() {
 	}
 	
-	public Instant getCreated() {
-		return created;
-	}
-	public void setCreated(Instant created) {
-		this.created = created;
-	}
 	public String getName() {
 		return name;
 	}

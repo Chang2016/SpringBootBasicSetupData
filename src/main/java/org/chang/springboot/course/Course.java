@@ -15,12 +15,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
+import org.chang.springboot.model.BaseEntity;
 import org.chang.springboot.student.Student;
 import org.chang.springboot.topic.Topic;
 
 @Entity
 @NamedQuery(name = "Course.getCoursesHavingTopic", query = "SELECT c FROM Course c WHERE c.topic.name = :name")
-public class Course {
+public class Course extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

@@ -9,9 +9,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.chang.springboot.student.Student;
@@ -157,7 +157,7 @@ public class CourseServiceTest {
   	Student s1 = new Student();
   	s1.setId(1L);
   	s1.setBirthday(LocalDate.of(1999, 5, 7));
-  	s1.setCreated(Instant.now());
+  	s1.setCreated(new Date());
 		course.setSize(2);
 		when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
 		when(studentRepository.save(any())).thenReturn(s1);
@@ -175,7 +175,7 @@ public class CourseServiceTest {
     Student s1 = new Student();
     s1.setId(1L);
     s1.setBirthday(LocalDate.of(1999, 5, 7));
-    s1.setCreated(Instant.now());
+    s1.setCreated(new Date());
     course.setSize(0);
     when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
     when(studentRepository.save(any())).thenReturn(s1);
@@ -193,7 +193,7 @@ public class CourseServiceTest {
     Student s1 = new Student();
     s1.setId(1L);
     s1.setBirthday(LocalDate.of(1999, 5, 7));
-    s1.setCreated(Instant.now());
+    s1.setCreated(new Date());
     course.setSize(10);
     course.getStudents().add(s1);
     when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
@@ -215,7 +215,7 @@ public class CourseServiceTest {
     Student oldStudent = new Student();
     oldStudent.setBirthday(LocalDate.of(1978, 2, 6));
     oldStudent.setName("Altmann");
-    oldStudent.setCreated(Instant.now());
+    oldStudent.setCreated(new Date());
     ReflectionTestUtils.setField(oldStudent, "id", 1L);
     Course course = new Course(1L, "Mock", LocalDate.of(2021, 1, 1), 5);
     course.addStudent(newStudent);

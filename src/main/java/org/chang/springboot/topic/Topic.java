@@ -5,9 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Size;
+import org.chang.springboot.model.BaseEntity;
 
 @Entity
-public class Topic {
+public class Topic extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;

@@ -46,4 +46,18 @@ public class CourseRepositoryTest extends DatabaseIntegrationTest {
     List<Course> found = repository.findByTopicId(1);
     assertThat(found.size()).isEqualTo(3);
   }
+
+  @Test
+  public void updateCourse() {
+    // given
+    List<Course> found = repository.findByName("Christentum");
+    assertThat(found.size()).isEqualTo(1);
+    Course christ = found.get(0);
+    //when
+    christ.setName("Judentum");
+    Course save = repository.save(christ);
+    // then
+    assertThat(save.getCreated()).isAfter(save.getUpdated());
+  }
+
 }
