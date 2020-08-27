@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /*
  * @DataJpaTest provides some standard setup needed for testing the persistence layer:
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ActiveProfiles(profiles = "test")
 @SpringBootTest
+@Transactional
 public class CourseRepositoryTest extends DatabaseIntegrationTest {
 
   @Autowired
@@ -57,7 +59,7 @@ public class CourseRepositoryTest extends DatabaseIntegrationTest {
     christ.setName("Judentum");
     Course save = repository.save(christ);
     // then
-    assertThat(save.getCreated()).isAfter(save.getUpdated());
+    assertThat(save.getCreated()).isBefore(save.getUpdated());
   }
 
 }
