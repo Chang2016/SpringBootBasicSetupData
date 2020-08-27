@@ -8,18 +8,19 @@ import org.springframework.context.annotation.Configuration;
 public class SslPropertyConfig {
 		
 	private String port;
-	
-	public class Ssl {
+	private Ssl ssl;
+
+	public static class Ssl {
 		private String keystoretype;
-		private String keystorePath;
+		private String keystore;
 		private String keystorePassword;
 		private String keyAlias;
 		
 		public String getKeystoretype() {
 			return keystoretype;
 		}
-		public String getKeystorePath() {
-			return keystorePath;
+		public String getKeystore() {
+			return keystore;
 		}
 		public String getKeystorePassword() {
 			return keystorePassword;
@@ -30,8 +31,8 @@ public class SslPropertyConfig {
 		public void setKeystoretype(String keystoretype) {
 			this.keystoretype = keystoretype;
 		}
-		public void setKeystorePath(String keystorePath) {
-			this.keystorePath = keystorePath;
+		public void setKeystore(String keystore) {
+			this.keystore = keystore;
 		}
 		public void setKeystorePassword(String keystorePassword) {
 			this.keystorePassword = keystorePassword;
@@ -48,4 +49,8 @@ public class SslPropertyConfig {
 	public void setPort(String port) {
 		this.port = port;
 	}
+
+	public Ssl getSsl() { return ssl; }
+
+	public void setSsl(Ssl ssl) { this.ssl = ssl; }
 }

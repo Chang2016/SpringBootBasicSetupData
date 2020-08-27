@@ -50,16 +50,18 @@ public class CourseRepositoryTest extends DatabaseIntegrationTest {
   }
 
   @Test
-  public void updateCourse() {
+  public void checkCreatedAndUpdated() {
     // given
     List<Course> found = repository.findByName("Christentum");
     assertThat(found.size()).isEqualTo(1);
     Course christ = found.get(0);
+    long createdMillis = christ.getCreated().getTime();
     //when
     christ.setName("Judentum");
     Course save = repository.save(christ);
     // then
-    assertThat(save.getCreated()).isBefore(save.getUpdated());
+    assertThat(save.getCreated().getTime()).isEqualTo(createdMillis);
+    assertThat(save.getCreated().getTime()).isLessThanOrEqualTo(save.getUpdated().getTime());
   }
 
 }

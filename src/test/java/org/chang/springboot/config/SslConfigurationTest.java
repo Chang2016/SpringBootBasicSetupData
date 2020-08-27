@@ -1,42 +1,31 @@
 package org.chang.springboot.config;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.hasSize;
 
+import org.chang.springboot.SpringBootBasicDataMain;
+import org.chang.springboot.integration.FullIntegrationTest;
+import org.chang.springboot.ssl.SslPropertyConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.chang.springboot.SpringBootBasicDataMain;
-import org.chang.springboot.ssl.SslPropertyConfig;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(properties = { "timezone = GMT", "server.port: 8443" }) 
+//@TestPropertySource(properties = {"timezone = GMT", "server.port: 8443"})
 @SpringBootTest(classes = {SpringBootBasicDataMain.class})
-public class SslConfigurationTest {
-	
-//	@Autowired
-//	private SslPropertyConfig.Ssl sslproperties;
-	
-	@Autowired
-	private SslPropertyConfig properties;
-		
-	@Test
-    public void should_Populate_MyConfigurationProperties() {
-		assertThat(properties.getPort(), is("8443"));
-//		assertThat(sslproperties.getKeystorePassword(), is("123456"));
-//		assertThat(sslproperties.getKeystorePath(), is("classpath:mykeystore_old"));
-//		assertThat(sslproperties.getKeystoretype(), is("PKS"));
-//		assertThat(sslproperties.super.getPort(), is("8443"));
-    }
+public class SslConfigurationTest extends FullIntegrationTest {
+
+  @Autowired
+  private SslPropertyConfig properties;
+
+  @Test
+  public void should_Populate_MyConfigurationProperties() {
+    assertThat(properties.getPort(), is("8443"));
+    assertThat(properties.getSsl().getKeystoretype(), is("PKCS12"));
+    assertThat(properties.getSsl().getKeystorePassword(), is("123456"));
+    assertThat(properties.getSsl().getKeystore(), is("classpath:keystore.p12"));
+		assertThat(properties.getSsl().getKeyAlias(), is("tomcat"));
+  }
 }
