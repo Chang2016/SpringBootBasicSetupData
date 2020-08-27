@@ -22,6 +22,16 @@ class LocalDateTimeAttributeConverterTest {
   }
 
   @Test
+  void convertNullToDatabaseColumn() {
+    // given
+    LocalDateTimeAttributeConverter converter = new LocalDateTimeAttributeConverter();
+    // when
+    Timestamp timestamp = converter.convertToDatabaseColumn(null);
+    // then
+    assertThat(timestamp).isNull();
+  }
+
+  @Test
   void convertToEntityAttribute() {
     // given
     Timestamp timestamp = Timestamp.from(Instant.now());
@@ -30,5 +40,15 @@ class LocalDateTimeAttributeConverterTest {
     LocalDateTime localDateTime = converter.convertToEntityAttribute(timestamp);
     // then
     assertThat(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).isEqualTo(timestamp.getTime());
+  }
+
+  @Test
+  void convertNullToEntityAttribute() {
+    // given
+    LocalDateTimeAttributeConverter converter = new LocalDateTimeAttributeConverter();
+    // when
+    LocalDateTime localDateTime = converter.convertToEntityAttribute(null);
+    // then
+    assertThat(localDateTime).isNull();
   }
 }
