@@ -9,12 +9,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.chang.springboot.student.Student;
@@ -64,6 +61,9 @@ public class CourseServiceTest {
 
   @MockBean
   private StudentRepository studentRepository;
+
+  @MockBean
+  private CourseJmsMessageSender courseJmsMessageSender;
 
   private final String TOPICNAME = "Religion";
   private Course courseWithoutDateAndTopic;
