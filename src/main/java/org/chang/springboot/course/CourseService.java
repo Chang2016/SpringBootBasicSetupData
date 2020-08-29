@@ -17,7 +17,10 @@ import org.chang.springboot.exceptions.ResourceNotFoundException;
 
 @Service
 public class CourseService {
-	
+
+	@Autowired
+	private CourseJmsMessageSender courseJmsMessageSender;
+
 	@Autowired
 	private StudentRepository studentRepository;
 
@@ -64,7 +67,9 @@ public class CourseService {
 	@Transactional
 	public Course createCourse(Course course) {
 //		try {
-			return courseRepository.save(course);
+		Course save = courseRepository.save(course);
+		courseJmsMessageSender.sendMessage(save);
+		return save;
 //		} catch (Exception e) {
 //			throw new ResourceNotFoundException(e.getMessage());
 //		}
