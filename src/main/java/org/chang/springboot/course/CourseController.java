@@ -104,12 +104,22 @@ public class CourseController {
   }
 
   @RequestMapping(method = RequestMethod.PUT, value = "courses/{id}", produces = "application/json;charset=UTF-8")
-  public ResponseEntity<Course> updateCourse(@PathVariable long id,
-      @Valid @RequestBody Course course, HttpServletRequest request) {
-    course.setId(id);
-    Course result = courseService.updateCourse(course);
-    UriComponents uri = ServletUriComponentsBuilder.fromRequest(request).build();
-    return ResponseEntity.created(uri.toUri()).build();
+  public ResponseEntity<CourseEnvelope> updateCourse(@PathVariable long id,
+      @Valid @RequestBody CourseDto courseDto, HttpServletRequest request) {
+    CourseEnvelope courseEnvelope = new CourseEnvelope();
+    courseDto.setId(id);
+    Course course = courseTransformer.toCourse(courseDto);
+    CourseResult courseResult = courseService.updateCourse(course);
+    if(courseResult.isError()) {
+      ErrorMessageDto errorMessageDto = ErrorMessageDto
+          .fromResponseEnum(courseResult.getCourseStatusEnum());
+      courseEnvelope.setErrorMessageDto(errorMessageDto);
+      return new ResponseEntity<>(courseEnvelope, HttpStatus.BAD_REQUEST);
+    } else {
+      CourseDto updatedCourseDto = courseTransformer.toCourseDto(courseResult.getCourse());
+      courseEnvelope.setCourseDto(updatedCourseDto);
+      return new ResponseEntity<>(courseEnvelope, HttpStatus.OK);
+    }
   }
 
   @RequestMapping(method = RequestMethod.DELETE, value = "courses/{id}")

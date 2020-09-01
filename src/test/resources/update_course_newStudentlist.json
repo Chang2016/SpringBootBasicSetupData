@@ -2,7 +2,8 @@
 	"id": 1,
     "name": "Buddismus",
     "startDate": "2017-09-11",
-    "topic": {
+    "size": 5,
+    "topicDto": {
         "id": 1,
         "name": "Religion"
     },

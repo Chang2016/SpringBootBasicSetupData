@@ -18,6 +18,9 @@ public class CourseStatusValidator {
 
   public CourseStatusEnum checkCourse(Course course, Optional<Topic> maybeTopic) {
     if (maybeTopic.isPresent()) {
+      if(course.getStudents().size() > course.getSize()) {
+        return CourseStatusEnum.TOO_MANY_STUDENTS;
+      }
       return CourseStatusEnum.OK;
     }
     return CourseStatusEnum.COURSE_HAS_NO_TOPIC;

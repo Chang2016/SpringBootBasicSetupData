@@ -102,7 +102,7 @@ public class CourseServiceTest {
           return courses;
         });
 
-    when(topicRepositoryMock.findById(topic.getId())).thenReturn(Optional.of(topic));
+    when(topicRepositoryMock.findById(any())).thenReturn(Optional.of(topic));
   }
 
   @Test
@@ -222,6 +222,7 @@ public class CourseServiceTest {
   @Test
   public void updateCourse() {
 //    given
+    Topic topic = new Topic(1, "Bla");
     Student newStudent = new Student();
     newStudent.setBirthday(LocalDate.of(1988, 2, 6));
     newStudent.setName("Neumann");
@@ -233,7 +234,7 @@ public class CourseServiceTest {
     Course course = new Course(1L, "Mock", LocalDate.of(2021, 1, 1), 5);
     course.addStudent(newStudent);
     course.addStudent(oldStudent);
-
+    course.setTopic(topic);
 //    when
     courseService.updateCourse(course);
 //    then

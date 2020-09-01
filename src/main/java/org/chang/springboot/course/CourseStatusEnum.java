@@ -14,7 +14,9 @@ public enum CourseStatusEnum implements RestResponse {
 
   STUDENT_DOES_NOT_EXIST(1004,"student does not exist"),
 
-  COURSE_HAS_NO_TOPIC(1005, "course has no topic");
+  COURSE_HAS_NO_TOPIC(1005, "course has no topic"),
+
+  TOO_MANY_STUDENTS(1006, "too many students for course size");
 
   private final String value;
 
