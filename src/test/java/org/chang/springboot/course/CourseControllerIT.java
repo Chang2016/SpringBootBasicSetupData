@@ -90,6 +90,9 @@ public class CourseControllerIT extends FullIntegrationTest {
   private Resource updateCourseJsonScript;
 
   @Value("classpath:update_course_too_many_students.json")
+  private Resource addTooManyStudents;
+
+  @Value("classpath:update_course_newStudentlistTooMany.json")
   private Resource updateCourseWithTooManyStudents;
 
   @Value("classpath:update_course_no_topic.json")
@@ -194,9 +197,32 @@ public class CourseControllerIT extends FullIntegrationTest {
 
   @Test
   @Transactional
-  public void addStudent() throws Exception {
+  public void updateCourseWithTooManyStudents() throws Exception {
     String content = StreamUtils
         .copyToString(updateCourseWithTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
+    mockMvc.perform(put("https://localhost:" + port + "/courses/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(content))
+        .andExpect(status().is4xxClientError())
+        .andExpect(jsonPath("courseDto", is(nullValue())))
+        .andExpect(jsonPath("errorMessageDto", is(notNullValue())))
+        .andExpect(jsonPath("errorMessageDto.code", is(1006)))
+        .andExpect(jsonPath("errorMessageDto.type", is("too many students for course size")));
+    Optional<Course> opt = courseRepository.findById(1L);
+    assertThat(opt.isPresent(), is(true));
+    Course course = opt.get();
+    assertThat(course.getName().equals("Christentum"), is(true));
+    assertThat(course.getId(), is(1L));
+    Set<Student> students = course.getStudents();
+    assertThat(students.size(), is(1));
+    assertThat(students.iterator().next().getName(), is("Alt"));
+  }
+
+  @Test
+  @Transactional
+  public void addStudent() throws Exception {
+    String content = StreamUtils
+        .copyToString(addTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
     mockMvc.perform(post("https://localhost:" + port + "/courses/2/students/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content))
@@ -217,7 +243,7 @@ public class CourseControllerIT extends FullIntegrationTest {
   @Transactional
   public void postTooManyStudentsIntoCourse() throws Exception {
     String content = StreamUtils
-        .copyToString(updateCourseWithTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
+        .copyToString(addTooManyStudents.getInputStream(), StandardCharsets.UTF_8);
     mockMvc.perform(post("https://localhost:" + port + "/courses/1/students/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content))

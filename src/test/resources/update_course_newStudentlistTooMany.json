@@ -2,7 +2,7 @@
 	"id": 1,
     "name": "Buddismus",
     "startDate": "2017-09-11",
-    "size": 5,
+    "size": 1,
     "topicDto": {
         "id": 1,
         "name": "Religion"
@@ -10,7 +10,13 @@
     "students": [
         {
             "id": 2,
+            "created": "2018-12-13T23:00:00Z",
             "name": "UpdatedMüller",
+            "birthday": "1977-06-03"
+        },
+        {
+            "id": 1,
+            "name": "TooMuchStudents",
             "birthday": "1977-06-03"
         }
     ]
