@@ -233,13 +233,11 @@ public class CourseControllerIT extends FullIntegrationTest {
     mockMvc.perform(put("https://localhost:" + port + "/courses/1")
         .contentType(MediaType.APPLICATION_JSON)
         .content(content))
-        .andExpect(status().is2xxSuccessful());
-    Optional<Course> opt = courseRepository.findById(1L);
-    assertThat(opt.isPresent(), is(true));
-    assertThat(opt.get().getTopic(), is(nullValue()));
-    assertThat(opt.get().getName().equals("Buddismus"), is(true));
-    assertThat(opt.get().getId(), is(1L));
-//		JSONAssert.assertEquals(expected, response.getBody(), false);
+        .andExpect(status().is4xxClientError())
+        .andExpect(jsonPath("$.courseDto", is(nullValue())))
+        .andExpect(jsonPath("$.errorMessageDto", is(notNullValue())))
+        .andExpect(jsonPath("$.errorMessageDto.code", is(1005)))
+        .andExpect(jsonPath("$.errorMessageDto.type", is("course has no topic")));
   }
 
   @Test

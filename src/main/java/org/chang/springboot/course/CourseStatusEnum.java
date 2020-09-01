@@ -12,11 +12,13 @@ public enum CourseStatusEnum implements RestResponse {
 
   STUDENT_ALREADY_IN_COURSE(1003,"student is already in course"),
 
-  STUDENT_DOES_NOT_EXIST(1004,"student does not exist");
+  STUDENT_DOES_NOT_EXIST(1004,"student does not exist"),
 
-  private String value;
+  COURSE_HAS_NO_TOPIC(1005, "course has no topic");
 
-  private int code;
+  private final String value;
+
+  private final int code;
 
   CourseStatusEnum(int code, String value) {
     this.code = code;

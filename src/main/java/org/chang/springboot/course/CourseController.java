@@ -9,6 +9,8 @@ import org.chang.springboot.model.api.ErrorMessageDto;
 import org.chang.springboot.student.Student;
 import org.chang.springboot.student.StudentDto;
 import org.chang.springboot.student.StudentTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,11 @@ import org.springframework.web.util.UriComponents;
 
 @RestController
 public class CourseController {
+
+  private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+
+  @Autowired
+  private CourseJmsMessageSender courseJmsMessageSender;
 
   @Autowired
   private CourseService courseService;
@@ -60,13 +67,22 @@ public class CourseController {
 //	}
 
   @RequestMapping(method = RequestMethod.POST, value = "courses/", produces = "application/json;charset=UTF-8")
-  public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course,
+  public ResponseEntity<CourseEnvelope> createCourse(@Valid @RequestBody CourseDto courseDto,
       HttpServletRequest request) {
-    Course result = courseService.createCourse(course);
-    UriComponents uri = ServletUriComponentsBuilder.fromRequest(request)
-        .pathSegment(String.valueOf(result.getId())).build();
-    System.out.println(uri.toString());
-    return ResponseEntity.created(uri.toUri()).build();
+    CourseEnvelope courseEnvelope = new CourseEnvelope();
+    Course course = courseTransformer.toCourse(courseDto);
+    CourseResult courseResult = courseService.createCourse(course);
+    if(courseResult.isError()) {
+      ErrorMessageDto errorMessageDto = ErrorMessageDto
+          .fromResponseEnum(courseResult.getCourseStatusEnum());
+      courseEnvelope.setErrorMessageDto(errorMessageDto);
+      return new ResponseEntity<>(courseEnvelope, HttpStatus.BAD_REQUEST);
+    } else {
+      courseJmsMessageSender.sendMessage(courseDto);
+      CourseDto courseResultDto = courseTransformer.toCourseDto(courseResult.getCourse());
+      courseEnvelope.setCourseDto(courseResultDto);
+      return new ResponseEntity<>(courseEnvelope, HttpStatus.OK);
+    }
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "courses/{id}/students/", produces = "application/json;charset=UTF-8")

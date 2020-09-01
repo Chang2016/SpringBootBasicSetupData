@@ -2,6 +2,7 @@ package org.chang.springboot.course;
 
 import java.util.Optional;
 import org.chang.springboot.student.Student;
+import org.chang.springboot.topic.Topic;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +14,13 @@ public class CourseStatusValidator {
     } else {
       return CourseStatusEnum.COURSE_DOES_NOT_EXIST;
     }
+  }
+
+  public CourseStatusEnum checkCourse(Course course, Optional<Topic> maybeTopic) {
+    if (maybeTopic.isPresent()) {
+      return CourseStatusEnum.OK;
+    }
+    return CourseStatusEnum.COURSE_HAS_NO_TOPIC;
   }
 
   private CourseStatusEnum isSpaceForStudentsInCourse(Course course, Student student) {

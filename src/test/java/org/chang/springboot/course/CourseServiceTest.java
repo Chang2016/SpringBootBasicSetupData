@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 import org.chang.springboot.student.Student;
 import org.chang.springboot.student.StudentRepository;
 import org.chang.springboot.topic.Topic;
+import org.chang.springboot.topic.TopicRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,10 +56,13 @@ public class CourseServiceTest {
   CourseStatusValidator courseStatusValidator;
 
   @MockBean
-  private CourseRepository repositoryMock;
+  private CourseRepository courseRepositoryMock;
 
   @MockBean
-  private CustomCourseRepository customRepositoryMock;
+  private TopicRepository topicRepositoryMock;
+
+  @MockBean
+  private CustomCourseRepository customCourseRepositoryMock;
 
   @MockBean
   private StudentRepository studentRepository;
@@ -90,56 +95,60 @@ public class CourseServiceTest {
     course.setStartDate(LocalDate.of(1999, 1, 4));
     course.setTopic(topic);
 
-    when(customRepositoryMock.getCoursesHavingTopic(TOPICNAME))
+    when(customCourseRepositoryMock.getCoursesHavingTopic(TOPICNAME))
         .thenAnswer((Answer<List<Course>>) invocationOnMock -> {
           List<Course> courses = new ArrayList<>();
           courses.add(new Course());
           return courses;
         });
+
+    when(topicRepositoryMock.findById(topic.getId())).thenReturn(Optional.of(topic));
   }
 
   @Test
   public void testWriteCourseWithoutDateAndTopic() {
-    courseService.createCourse(courseWithoutDateAndTopic);
-    verify(repositoryMock).save(courseWithoutDateAndTopic);
+    CourseResult course = courseService.createCourse(courseWithoutDateAndTopic);
+    verify(courseRepositoryMock, never()).save(courseWithoutDateAndTopic);
+    assertThat(course.getCourseStatusEnum().getCode(), is(1005));
   }
 
   @Test
   public void testWriteCourseWithoutTopic() {
-    courseService.createCourse(courseWithoutTopic);
-    verify(repositoryMock).save(courseWithoutTopic);
+    CourseResult course = courseService.createCourse(courseWithoutTopic);
+    verify(courseRepositoryMock, never()).save(courseWithoutTopic);
+    assertThat(course.getCourseStatusEnum().getCode(), is(1005));
   }
 
   @Test
   public void testWriteCourse() {
     courseService.createCourse(course);
-    verify(repositoryMock).save(course);
+    verify(courseRepositoryMock).save(course);
   }
 
   @Test
   public void testFindCourseByTopicName() {
     List<Course> erg = courseService.retrieveCoursesByTopicName(TOPICNAME);
-    verify(customRepositoryMock).getCoursesHavingTopic(TOPICNAME);
+    verify(customCourseRepositoryMock).getCoursesHavingTopic(TOPICNAME);
     assertThat(erg, is(notNullValue()));
     assertThat(Integer.valueOf(erg.size()), is(equalTo(1)));
   }
 
   @Test
   public void testFindCourseWithNonExistingTopic() {
-    when(customRepositoryMock.getCoursesHavingTopic(anyString()))
+    when(customCourseRepositoryMock.getCoursesHavingTopic(anyString()))
         .thenAnswer((Answer<List<Course>>) invocationOnMock -> {
           List<Course> courses = new ArrayList<>();
           return courses;
         });
     List<Course> erg = courseService.retrieveCoursesByTopicName("blabla");
-    verify(customRepositoryMock).getCoursesHavingTopic("blabla");
+    verify(customCourseRepositoryMock).getCoursesHavingTopic("blabla");
     assertThat(erg, is(notNullValue()));
     assertThat(Integer.valueOf(erg.size()), is(equalTo(0)));
   }
 
   @Test
   public void retrieveNonExistingCourse() {
-    when(repositoryMock.findById(any())).thenReturn(Optional.empty());
+    when(courseRepositoryMock.findById(any())).thenReturn(Optional.empty());
     Optional<Course> maybeCourse = courseService.retrieveCourse(1);
     assertThat(maybeCourse.isPresent(), is(false));
   }
@@ -147,7 +156,7 @@ public class CourseServiceTest {
   @Test
   public void retrieveExistingCourse() {
     Course course = new Course(1, "eee", LocalDate.now(), 5);
-    when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
+    when(courseRepositoryMock.findById(any())).thenReturn(Optional.of(course));
     Optional<Course> maybeCourse = courseService.retrieveCourse(1);
     assertThat(maybeCourse.isPresent(), is(true));
     Course course1 = maybeCourse.get();
@@ -163,9 +172,9 @@ public class CourseServiceTest {
   	s1.setCreated(LocalDateTime.now());
 //  	s1.setCreated(new Date());
 		course.setSize(2);
-		when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
+		when(courseRepositoryMock.findById(any())).thenReturn(Optional.of(course));
 		when(studentRepository.save(any())).thenReturn(s1);
-		when(repositoryMock.save(any())).thenReturn(course);
+		when(courseRepositoryMock.save(any())).thenReturn(course);
 //		when
 		CourseResult courseResult = courseService.addStudent(1L, s1);
 //		then
@@ -181,9 +190,9 @@ public class CourseServiceTest {
     s1.setBirthday(LocalDate.of(1999, 5, 7));
     s1.setCreated(LocalDateTime.now());
     course.setSize(0);
-    when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
+    when(courseRepositoryMock.findById(any())).thenReturn(Optional.of(course));
     when(studentRepository.save(any())).thenReturn(s1);
-    when(repositoryMock.save(any())).thenReturn(course);
+    when(courseRepositoryMock.save(any())).thenReturn(course);
 //		when
     CourseResult courseResult = courseService.addStudent(1L, s1);
 //		then
@@ -200,9 +209,9 @@ public class CourseServiceTest {
     s1.setCreated(LocalDateTime.now());
     course.setSize(10);
     course.getStudents().add(s1);
-    when(repositoryMock.findById(any())).thenReturn(Optional.of(course));
+    when(courseRepositoryMock.findById(any())).thenReturn(Optional.of(course));
     when(studentRepository.save(any())).thenReturn(s1);
-    when(repositoryMock.save(any())).thenReturn(course);
+    when(courseRepositoryMock.save(any())).thenReturn(course);
 //		when
     CourseResult courseResult = courseService.addStudent(1L, s1);
 //		then
@@ -228,7 +237,7 @@ public class CourseServiceTest {
 //    when
     courseService.updateCourse(course);
 //    then
-    verify(repositoryMock).save(listCaptor.capture());
+    verify(courseRepositoryMock).save(listCaptor.capture());
     Course value = listCaptor.getValue();
     assertThat(value, equalTo(course));
   }

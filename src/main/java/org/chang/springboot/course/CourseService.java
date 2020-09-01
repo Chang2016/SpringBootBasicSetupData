@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.chang.springboot.student.Student;
 import org.chang.springboot.student.StudentRepository;
+import org.chang.springboot.topic.Topic;
+import org.chang.springboot.topic.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,9 @@ public class CourseService {
 
 	@Autowired
 	private CustomCourseRepository customCourseRepository;
+
+	@Autowired
+	private TopicRepository topicRepository;
 
 	@Autowired
 	private CourseRepository courseRepository;
@@ -65,14 +70,21 @@ public class CourseService {
 	}
 	
 	@Transactional
-	public Course createCourse(Course course) {
+	public CourseResult createCourse(Course course) {
+		Optional<Topic> maybeTopic = Optional.empty();
+		if(null != course.getTopic())
+			maybeTopic = topicRepository.findById(course.getTopic().getId());
+		CourseStatusEnum courseStatusEnum = courseStatusValidator.checkCourse(course, maybeTopic);
+		if(courseStatusEnum == CourseStatusEnum.OK) {
 //		try {
-		Course save = courseRepository.save(course);
-		courseJmsMessageSender.sendMessage(save);
-		return save;
+			Course save = courseRepository.save(course);
+//		courseJmsMessageSender.sendMessage(save);
+			return CourseResult.builder().error(false).course(save).courseStatusEnum(courseStatusEnum).build();
 //		} catch (Exception e) {
 //			throw new ResourceNotFoundException(e.getMessage());
 //		}
+		}
+		return CourseResult.builder().error(true).courseStatusEnum(courseStatusEnum).build();
 	}
 	
 	@Transactional
