@@ -7,4 +7,4 @@ COPY ${DEPENDENCY}/BOOT-INF/classes/META-INF /app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /app
 ENV spring.profiles.active=staging
 EXPOSE 8080
-ENTRYPOINT ["java","-cp","app:app/lib/*","SpringBootBasicDataMain"]
+ENTRYPOINT ["java","-cp","app:app/lib/*","org.chang.springboot.SpringBootBasicDataMain"]
