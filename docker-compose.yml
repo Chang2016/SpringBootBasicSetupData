@@ -1,0 +1,21 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-docker-container
+    ports:
+      - "2012:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=topic_db
+      - MYSQL_PASSWORD=1234
+  web:
+    build: .
+    depends_on:
+      - "db"
+    ports:
+      - "8087:8443"
+    container_name: springbootbasicsetupdata
+    links:
+      - "db"
+    image: michibln74/springbootbasicsetupdata
