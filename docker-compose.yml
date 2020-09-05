@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: mysql:latest
+    image: mysql:8
     container_name: mysql-docker-container
     ports:
       - "2012:3306"

@@ -19,7 +19,7 @@ docker run -d \
      -e MYSQL_ROOT_PASSWORD=1234 \
      -e MYSQL_DATABASE=topic_db \
      -e MYSQL_PASSWORD=1234 \
-        mysql:latest
+        mysql:8
 
 container starten und stoppen
 docker start springbootbasicsetupdata
