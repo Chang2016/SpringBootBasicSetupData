@@ -1,0 +1,46 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefinitions": [
+    {
+      "name": "mysql-docker-container",
+      "image": "mysql:8",
+      "environment": [
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "value": "1234"
+        },
+        {
+          "name": "MYSQL_PASSWORD",
+          "value": "1234"
+        },
+        {
+          "name": "MYSQL_DATABASE",
+          "value": "topic_db"
+        }
+      ],
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 2012,
+          "containerPort": 3306
+        }
+      ]
+    },
+    {
+      "name": "springbootbasicsetupdata",
+      "image": "michibln74/springbootbasicsetupdata",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 8087,
+          "containerPort": 8443
+        }
+      ],
+      "links": [
+        "mysql-docker-container"
+      ]
+    }
+  ]
+}
