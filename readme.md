@@ -27,3 +27,7 @@ accept non-trusted certificates automtically
 RepositoryTests müssen von DatabaseIntegrationTest ableiten
 EndToEndTests müssen von FullIntegrationTest ableiten
 
+#Keycloak
+Running with postgresql
+###Start with 
+docker-compose -f keycloak-postgres.yml up

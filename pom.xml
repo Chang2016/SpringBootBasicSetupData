@@ -16,7 +16,9 @@
 		<docker.image.prefix>michibln74</docker.image.prefix>
 		<docker.dependency.lib>target/dependency/BOOT-INF/lib</docker.dependency.lib>
 		<docker.dependency.classes>target/dependency/BOOT-INF/classes</docker.dependency.classes>
+		<keycloak-adapter-bom.version>10.0.2</keycloak-adapter-bom.version>
 	</properties>
+
 	<repositories>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
@@ -25,6 +27,19 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-adapter-bom</artifactId>
+				<version>${keycloak-adapter-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -54,6 +69,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-spring-security-adapter</artifactId>
+<!--			<version>3.2.1.Final</version>-->
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-spring-boot-starter</artifactId>
+<!--			<version>3.2.1.Final</version>-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

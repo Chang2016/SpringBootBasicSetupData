@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.chang.springboot.SecurityConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +39,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StreamUtils;
 import org.chang.springboot.SpringBootBasicDataMain;
-import org.chang.springboot.authentication.AuthorizationServerConfiguration;
-import org.chang.springboot.authentication.OAuth2SecurityConfiguration;
 
 /*
  * Hier wird als TextContext nur die Klasse TopicController geladen
@@ -47,8 +46,7 @@ import org.chang.springboot.authentication.OAuth2SecurityConfiguration;
 @RunWith(SpringRunner.class)
 @WebMvcTest(TopicController.class) //bootstraps just TopicController
 @ContextConfiguration(classes = {SpringBootBasicDataMain.class,
-    AuthorizationServerConfiguration.class,
-    OAuth2SecurityConfiguration.class})
+    SecurityConfig.class})
 public class TopicControllerWithoutServerJustWeblayerTest {
 
   @Autowired
