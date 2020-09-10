@@ -37,8 +37,10 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.StreamUtils;
 import org.chang.springboot.SpringBootBasicDataMain;
+import org.springframework.web.context.WebApplicationContext;
 
 /*
  * Hier wird als TextContext nur die Klasse TopicController geladen
@@ -48,6 +50,9 @@ import org.chang.springboot.SpringBootBasicDataMain;
 @ContextConfiguration(classes = {SpringBootBasicDataMain.class,
     SecurityConfig.class})
 public class TopicControllerWithoutServerJustWeblayerTest {
+
+  @Autowired
+  private WebApplicationContext context;
 
   @Autowired
   private Environment env;
@@ -82,6 +87,11 @@ public class TopicControllerWithoutServerJustWeblayerTest {
 
   @Before
   public void setup() {
+    mockMvc = MockMvcBuilders
+        .webAppContextSetup(context)
+//        .apply(springSecurity())
+        .build();
+
     List<Topic> topics = new ArrayList<>();
     Topic topic = new Topic();
     topic.setName("Mockito");

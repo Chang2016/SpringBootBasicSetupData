@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.chang.springboot.integration.FullIntegrationTest;
+import org.springframework.web.context.WebApplicationContext;
 
 /*
  * Dieser Test startet nicht den Server, Spring nimmt den HTTP-Request entgegen und testet Controller, DAO,...
@@ -41,7 +45,10 @@ public class TopicControllerWithoutServerIT extends FullIntegrationTest {
   private MockMvc mockMvc;
 
   @Autowired
-  private Environment env;
+  private WebApplicationContext wac;
+
+//  @Autowired
+//  private Environment env;
 
   @Value("classpath:create_topic.json")
   private Resource createJsonScript;
@@ -58,6 +65,11 @@ public class TopicControllerWithoutServerIT extends FullIntegrationTest {
   @Value("classpath:create_topic_with_existing_name.json")
   private Resource topicWithExistingName;
 
+  @Before
+  public void init() {
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+  }
+
   //	Es wird gegen den tatsächlichen Wert in der DB getestet
   @Test
   public void findNonExistingTopic() throws Exception {
@@ -67,6 +79,7 @@ public class TopicControllerWithoutServerIT extends FullIntegrationTest {
   }
 
   @Test
+//  @WithMockUser
   public void findExistingTopic() throws Exception {
     this.mockMvc.perform(get("/topics/1"))
         .andDo(print())
