@@ -1,0 +1,24 @@
+# curl -d "client_secret=<client-secret>" -d "client_id=<client-id>" -d "username=<username>" -d "password=<password>" -d "grant_type=password"
+#-X POST "http://localhost:8081/auth/realms/topics/protocol/openid-connect/token"
+POST http://localhost:8081/auth/realms/topics/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=topic-client&username=user1&password=1234&grant_type=password
+
+###
+# curl --location --request POST 'https://localhost:8087/oauth/token?grant_type=password&username=bill&password=abc123'
+#--header 'Authorization: Basic bXktdHJ1c3RlZC1jbGllbnQ6c2VjcmV0'
+#--header 'Cookie: JSESSIONID=0C340AB75896E79E48B97BA55545313B'
+POST https://localhost:{{port}}/oauth/token?grant_type=password&username=bill&password=abc123
+Authorization: Basic bXktdHJ1c3RlZC1jbGllbnQ6c2VjcmV0
+Cookie: JSESSIONID=0C340AB75896E79E48B97BA55545313B
+
+###
+###
+GET https://localhost:{{port}}/topics/
+###
+###
+GET https://localhost:{{port}}/topicsstartingwith/S
+###
+GET https://localhost:{{port}}/courses/?access_token={{bearerToken}}&page=0&size=1
+###

@@ -7,6 +7,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+//import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -89,7 +91,7 @@ public class TopicControllerWithoutServerJustWeblayerTest {
   public void setup() {
     mockMvc = MockMvcBuilders
         .webAppContextSetup(context)
-//        .apply(springSecurity())
+        .apply(springSecurity())
         .build();
 
     List<Topic> topics = new ArrayList<>();
