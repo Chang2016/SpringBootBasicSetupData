@@ -50,3 +50,4 @@ curl http://localhost:8001/version
 
 
 export POD_NAME=$(kubectl get pods -o go-template --template '{{range .tems}}{{.metadata.name}}{{"\n"}}{{end}}') echo Name of the Pod: $POD_NAME
+test for rebase
