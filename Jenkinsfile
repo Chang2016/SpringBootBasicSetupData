@@ -16,7 +16,7 @@ pipeline {
 
     stage('Analyze') {
       steps {
-        echo 'Deploying...'
+        echo 'Analyzing...'
       }
     }
 
