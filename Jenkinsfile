@@ -1,3 +1,5 @@
+import jenkins.model.*
+    
 node() {
     logInfo("------------- JOB KONFIGURATION -------------")
     logInfo("Build Number:  ${env.BUILD_NUMBER}")
