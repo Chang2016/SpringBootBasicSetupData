@@ -25,6 +25,9 @@ pipeline {
     }
 
     stage('Analyze') {
+      environment {
+        scannerHome = 'tool \'SonarQube\''
+      }
       steps {
         echo 'Analyzing...'
       }
