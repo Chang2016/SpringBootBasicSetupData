@@ -21,10 +21,8 @@ pipeline {
     stage('Report') {
       steps {
         echo 'Report...'
-        realtimeJUnit(testResults: 'target/surefire-reports/**/*.xml') {
-          archiveArtifacts 'target/*.jar,target/*.hpi'
-        }
-
+        realtimeJUnit(testResults: 'target/surefire-reports/**/*.xml')
+        archiveArtifacts 'target/*.jar,target/*.hpi'
       }
     }
 
