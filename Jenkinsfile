@@ -21,7 +21,7 @@ pipeline {
     stage('Report') {
       steps {
         echo 'Report...'
-        junit(testResults: 'target/surefire-reports/**/*.xml')
+        junit 'target/surefire-reports/**/*.xml'
         archiveArtifacts 'target/*.jar,target/*.hpi'
       }
     }
@@ -29,6 +29,7 @@ pipeline {
     stage('Analyze') {
       steps {
         echo 'Analyzing...'
+        withSonarQubeEnv 'SonarQube'
       }
     }
 
