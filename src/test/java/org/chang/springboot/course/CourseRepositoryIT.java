@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles(profiles = "test")
 @SpringBootTest
 @Transactional
-public class CourseRepositoryTest extends DatabaseIntegrationTest {
+public class CourseRepositoryIT extends DatabaseIntegrationTest {
 
   @Autowired
   private CourseRepository repository;
