@@ -21,13 +21,15 @@ pipeline {
     stage('Report') {
       steps {
         echo 'Report...'
-        realtimeJUnit(testResults: 'target/surefire-reports/*')
+        junit 'target/surefire-reports/**/*.xml'
+        archiveArtifacts 'target/*.jar,target/*.hpi'
       }
     }
 
     stage('Analyze') {
       steps {
         echo 'Analyzing...'
+        withSonarQubeEnv 'SonarQube'
       }
     }
 
