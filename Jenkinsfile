@@ -27,10 +27,13 @@ pipeline {
     }
 
     stage('Analyze') {
+      environment {
+        scannerHome = tool 'SonarQube'
+      }
       steps {
         echo 'Analyzing...'
         withSonarQubeEnv('SonarQube') {
-          sh 'mvn sonar:sonar'
+          sh "${scannerHome}/bin/sonar-scanner"
         }
       }
     }
