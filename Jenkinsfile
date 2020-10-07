@@ -41,7 +41,7 @@ pipeline {
                 -Dsonar.projectKey=$PROJECT_NAME \
                 -Dsonar.sources=.'''
         }
-        timeout(time: 10, unit: 'MINUTES') {
+        timeout(time: 10, unit: 'SECONDS') {
             waitForQualityGate abortPipeline: true
         }
       }
