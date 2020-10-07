@@ -28,13 +28,14 @@ pipeline {
 
     stage('Analyze') {
       environment {
-        scannerHome = tool 'SonarQube'
+        scannerHome = 'SonarQube'
       }
       steps {
         echo 'Analyzing...'
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkins') {
           sh "${scannerHome}/bin/sonar-scanner"
         }
+
       }
     }
 
