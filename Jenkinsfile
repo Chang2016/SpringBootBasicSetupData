@@ -27,11 +27,21 @@ pipeline {
     }
 
     stage('Analyze') {
+      environment {
+        SCANNERHOME = tool 'SonarQube'
+        ORGANIZATION = "chang2016-github"
+        PROJECT_NAME = "SpringBootBasicSetupData"
+      }
       steps {
         echo 'Analyzing...'
-        withSonarQubeEnv('SonarQube') {
-          sh 'mvn sonar:sonar'
+        withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkinsId') {
+          sh '''${SCANNERHOME}/bin/sonar-scanner \
+                -Dsonar.organization=$ORGANIZATION \
+                -Dsonar.java.binaries=build/classes/java/ \
+                -Dsonar.projectKey=$PROJECT_NAME \
+                -Dsonar.sources=.'''
         }
+
       }
     }
 
