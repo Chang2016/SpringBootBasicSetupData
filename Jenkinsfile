@@ -29,7 +29,7 @@ pipeline {
     stage('Analyze') {
       environment {
         SCANNERHOME = tool 'SonarQube'
-        ORGANIZATION = "chang2016-github"
+        ORGANIZATION = "default-organization"
         PROJECT_NAME = "SpringBootBasicSetupData"
       }
       steps {
