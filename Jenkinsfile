@@ -32,7 +32,7 @@ pipeline {
       }
       steps {
         echo 'Analyzing...'
-        withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkins') {
+        withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkinsId') {
           sh "${scannerHome}/bin/sonar-scanner"
         }
 
