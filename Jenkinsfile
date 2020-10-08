@@ -14,7 +14,7 @@ pipeline {
       steps {
         echo 'Building...'
         echo "Running ${env.BUILD_ID} ${env.BUILD_DISPLAY_NAME} on ${env.NODE_NAME} and JOB ${env.JOB_NAME}"
-        sh 'mvn clean -DskipITs install'
+        sh 'mvn clean install'
       }
     }
 
@@ -28,22 +28,20 @@ pipeline {
 
     stage('Analyze') {
       environment {
-        SCANNERHOME = tool 'SonarQube'
-        ORGANIZATION = "default-organization"
-        PROJECT_NAME = "SpringBootBasicSetupData"
+        SCANNERHOME = 'SonarQube'
+        ORGANIZATION = 'default-organization'
+        PROJECT_NAME = 'SpringBootBasicSetupData'
       }
       steps {
         echo 'Analyzing...'
         withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkinsId') {
-          sh '''${SCANNERHOME}/bin/sonar-scanner \
-                -Dsonar.organization=$ORGANIZATION \
-                -Dsonar.java.binaries=target/classes/ \
-                -Dsonar.projectKey=$PROJECT_NAME \
-                -Dsonar.sources=.'''
+          sh '${SCANNERHOME}/bin/sonar-scanner                 -Dsonar.organization=$ORGANIZATION                 -Dsonar.java.binaries=target/classes/                 -Dsonar.projectKey=$PROJECT_NAME                 -Dsonar.sources=.'
         }
+
         timeout(time: 60, unit: 'SECONDS') {
-            waitForQualityGate abortPipeline: true
+          waitForQualityGate true
         }
+
       }
     }
 
