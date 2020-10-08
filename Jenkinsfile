@@ -28,7 +28,7 @@ pipeline {
 
     stage('Analyze') {
       environment {
-        SCANNERHOME = 'SonarQube'
+        SCANNERHOME = tool 'SonarQube'
         ORGANIZATION = 'default-organization'
         PROJECT_NAME = 'SpringBootBasicSetupData'
       }
@@ -39,7 +39,7 @@ pipeline {
         }
 
         timeout(time: 60, unit: 'SECONDS') {
-          waitForQualityGate true
+          waitForQualityGate abortPipeline: true
         }
 
       }
