@@ -29,18 +29,22 @@ public class CourseController {
 
   private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  @Autowired
   private CourseJmsMessageSender courseJmsMessageSender;
 
-  @Autowired
   private CourseService courseService;
 
-  @Autowired
   private StudentTransformer studentTransformer;
 
-  @Autowired
   private CourseTransformer courseTransformer;
 
+  @Autowired
+  public CourseController(CourseJmsMessageSender courseJmsMessageSender, CourseService courseService,
+      StudentTransformer studentTransformer, CourseTransformer courseTransformer) {
+    this.courseJmsMessageSender = courseJmsMessageSender;
+    this.courseService = courseService;
+    this.studentTransformer = studentTransformer;
+    this.courseTransformer = courseTransformer;
+  }
   //	automatische Serialisierung nach JSON
   @RequestMapping(method = RequestMethod.GET, value = "courses/", params = {"page", "size"})
   public List<Course> retrieveCourses(@RequestParam("page") int page,
