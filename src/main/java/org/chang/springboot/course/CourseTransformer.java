@@ -14,11 +14,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CourseTransformer {
-  @Autowired
+
   private StudentTransformer studentTransformer;
 
-  @Autowired
   private TopicTransformer topicTransformer;
+
+  @Autowired
+  public CourseTransformer(StudentTransformer studentTransformer, TopicTransformer topicTransformer) {
+    this.studentTransformer = studentTransformer;
+    this.topicTransformer = topicTransformer;
+  }
 
   public List<CourseDto> toListOfCourseDto(List<Course> courses) {
     return courses.stream().map(this::toCourseDto).collect(Collectors.toList());

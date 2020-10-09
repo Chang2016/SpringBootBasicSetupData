@@ -21,26 +21,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponents;
 
 @RestController
 public class CourseController {
 
   private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  @Autowired
-  private CourseJmsMessageSender courseJmsMessageSender;
+  private final CourseJmsMessageSender courseJmsMessageSender;
+
+  private final CourseService courseService;
+
+  private final StudentTransformer studentTransformer;
+
+  private final CourseTransformer courseTransformer;
 
   @Autowired
-  private CourseService courseService;
-
-  @Autowired
-  private StudentTransformer studentTransformer;
-
-  @Autowired
-  private CourseTransformer courseTransformer;
-
+  public CourseController(CourseJmsMessageSender courseJmsMessageSender, CourseService courseService,
+      StudentTransformer studentTransformer, CourseTransformer courseTransformer) {
+    this.courseJmsMessageSender = courseJmsMessageSender;
+    this.courseService = courseService;
+    this.studentTransformer = studentTransformer;
+    this.courseTransformer = courseTransformer;
+  }
   //	automatische Serialisierung nach JSON
   @RequestMapping(method = RequestMethod.GET, value = "courses/", params = {"page", "size"})
   public List<Course> retrieveCourses(@RequestParam("page") int page,
