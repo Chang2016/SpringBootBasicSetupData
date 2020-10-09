@@ -35,7 +35,7 @@ pipeline {
       steps {
         echo 'Analyzing...'
         withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'jenkinsId') {
-          sh '${SCANNERHOME}/bin/sonar-scanner                 -Dsonar.organization=$ORGANIZATION                 -Dsonar.java.binaries=target/classes/                 -Dsonar.projectKey=$PROJECT_NAME                 -Dsonar.sources=.'
+          sh '${SCANNERHOME}/bin/sonar-scanner                 -Dsonar.organization=$ORGANIZATION                 -Dsonar.java.binaries=target/classes/                 -Dsonar.projectKey=$PROJECT_NAME                 -Dsonar.sources=./src/main/java/'
         }
 
         timeout(time: 60, unit: 'SECONDS') {
