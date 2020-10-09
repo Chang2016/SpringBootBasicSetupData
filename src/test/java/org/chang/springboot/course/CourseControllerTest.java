@@ -92,4 +92,16 @@ public class CourseControllerTest {
     ResponseEntity<CourseEnvelope> courseEnvelope = courseController.createCourse(courseDto, new MockHttpServletRequest());
     assertThat(courseEnvelope.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
+
+  @Test
+  public void createIncorrectCourse() {
+    // when
+    CourseDto courseDto = createCourseDto();
+    courseDto.setTopicDto(null);
+    Course course = courseTransformer.toCourse(courseDto);
+    CourseResult incorrect = CourseResult.builder().course(course).error(true).courseStatusEnum(CourseStatusEnum.COURSE_HAS_NO_TOPIC).build();
+    when(courseService.createCourse(any())).thenReturn(incorrect);
+    ResponseEntity<CourseEnvelope> courseEnvelope = courseController.createCourse(courseDto, new MockHttpServletRequest());
+    assertThat(courseEnvelope.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
 }
