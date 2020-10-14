@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 //@TestPropertySource(properties = {"timezone = GMT", "server.port: 8443"})
 @SpringBootTest(classes = {SpringBootBasicDataMain.class})
-public class SslConfigurationTest extends FullIntegrationTest {
+public class SslConfigurationIT extends FullIntegrationTest {
 
   @Autowired
   private SslPropertyConfig properties;
