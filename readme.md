@@ -1,4 +1,4 @@
-läuft unter jdk 1.8
+läuft unter jdk 1.8  
 Zertifikat läuft regelmäßig ab und muss erneuert werden
 
 # Keystore:
