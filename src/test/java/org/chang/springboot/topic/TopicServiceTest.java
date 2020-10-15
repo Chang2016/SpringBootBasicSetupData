@@ -1,6 +1,5 @@
 package org.chang.springboot.topic;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -29,18 +29,29 @@ public class TopicServiceTest {
 
         @Bean
         public TopicService topicService() {
-            List<Topic> topics = initFixture();
+            List<Topic> topics = initTopicFixture();
+            List<TopicDto> topicDtos = initTopicDtoFixture();
             when(topicRepository.findAll()).thenReturn(topics);
+            when(topicRepository.findByNameStartingWith(any())).thenReturn(topicDtos);
             return new TopicService(restTemplateBuilder, topicRepository);
         }
 
-        private List<Topic> initFixture() {
+        private List<Topic> initTopicFixture() {
             Topic topic = new Topic();
             topic.setId(1L);
             topic.setName("Dummy");
-            List<Topic> topicList = new ArrayList<>();
-            topicList.add(topic);
-            return topicList;
+            List<Topic> topics = new ArrayList<>();
+            topics.add(topic);
+            return topics;
+        }
+
+        private List<TopicDto> initTopicDtoFixture() {
+            List<TopicDto> topics = new ArrayList<>();
+            TopicDto topic = new TopicDto();
+            topic.setId(1L);
+            topic.setName("Dummy");
+            topics.add(topic);
+            return topics;
         }
     }
 
@@ -55,5 +66,12 @@ public class TopicServiceTest {
         Topic next = topics.iterator().next();
         assertThat(next.getName()).isEqualTo("Dummy");
         assertThat(next.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void testRetrieveTopicsStartingWith() {
+        TopicList topicList = topicService.retrieveTopicsStartingWith("sub");
+        List<TopicDto> topics = topicList.getTopics();
+        assertThat(topics.size()).isEqualTo(1);
     }
 }
