@@ -52,5 +52,7 @@ public class TopicServiceTest {
     void testRetrieveTopics() {
         List<Topic> topics = topicService.retrieveTopics();
         assertThat(topics.size()).isEqualTo(1);
+        Topic next = topics.iterator().next();
+        assertThat(next.getName()).isEqualTo("Dummy");
     }
 }
