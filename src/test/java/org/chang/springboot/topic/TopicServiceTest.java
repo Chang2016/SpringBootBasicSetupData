@@ -53,6 +53,9 @@ public class TopicServiceTest {
         // then
         List<TopicDto> topics = topicList.getTopics();
         assertThat(topics.size()).isEqualTo(1);
+        TopicDto next = topics.iterator().next();
+        assertThat(next.getId()).isEqualTo(1L);
+        assertThat(next.getName()).isEqualTo("Dummy");
     }
 
     private List<Topic> initTopicFixture() {
