@@ -72,7 +72,17 @@ public class TopicServiceTest {
         Topic topic = result.get();
         assertThat(topic.getId()).isEqualTo(1L);
         assertThat(topic.getName()).isEqualTo("Dummy");
+    }
 
+    @Test
+    void testUpdateTopic() {
+        // given
+        Topic topic = initTopic();
+        when(topicRepository.save(any())).thenReturn(topic);
+        // when
+        Topic saved = topicService.updateTopic(topic);
+        // then
+        assertThat(saved).isNotNull();
     }
 
     private Optional<Topic> initTopicOptional() {
