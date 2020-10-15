@@ -17,13 +17,14 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class TopicService {
-	
-	@Autowired
-	private TopicRepository topicRepository;
+
+	private final TopicRepository topicRepository;
 	
 	private final RestTemplate restTemplate;
-	
-	public TopicService(RestTemplateBuilder restTemplateBuilder) {
+
+	@Autowired
+	public TopicService(RestTemplateBuilder restTemplateBuilder, TopicRepository topicRepository) {
+		this.topicRepository = topicRepository;
 		restTemplate = restTemplateBuilder.build();
 	}
 	
