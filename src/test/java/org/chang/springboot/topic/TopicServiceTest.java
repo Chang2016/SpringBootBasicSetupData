@@ -6,8 +6,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,10 +60,35 @@ public class TopicServiceTest {
         assertThat(next.getName()).isEqualTo("Dummy");
     }
 
-    private List<Topic> initTopicFixture() {
+    @Test
+    void testRetrieveTopic() {
+        // given
+        Optional<Topic> maybeTopic = initTopicOptional();
+        when(topicRepository.findById(any())).thenReturn(maybeTopic);
+        // when
+        Optional<Topic> result = topicService.retrieveTopic(10);
+        // then
+        assertThat(result.isPresent()).isTrue();
+        Topic topic = result.get();
+        assertThat(topic.getId()).isEqualTo(1L);
+        assertThat(topic.getName()).isEqualTo("Dummy");
+
+    }
+
+    private Optional<Topic> initTopicOptional() {
+        Topic topic = initTopic();
+        return Optional.of(topic);
+    }
+
+    private Topic initTopic() {
         Topic topic = new Topic();
         topic.setId(1L);
         topic.setName("Dummy");
+        return topic;
+    }
+
+    private List<Topic> initTopicFixture() {
+        Topic topic = initTopic();
         List<Topic> topics = new ArrayList<>();
         topics.add(topic);
         return topics;
