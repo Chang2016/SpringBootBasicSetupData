@@ -3,12 +3,14 @@ package org.chang.springboot.topic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -83,6 +85,13 @@ public class TopicServiceTest {
         Topic saved = topicService.updateTopic(topic);
         // then
         assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testUpdateBrokenTopic() {
+        Topic topic = initTopic();
+        when(topicRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        assertThrows(DataIntegrityViolationException.class, () -> topicService.updateTopic(topic));
     }
 
     private Optional<Topic> initTopicOptional() {
