@@ -54,5 +54,6 @@ public class TopicServiceTest {
         assertThat(topics.size()).isEqualTo(1);
         Topic next = topics.iterator().next();
         assertThat(next.getName()).isEqualTo("Dummy");
+        assertThat(next.getId()).isEqualTo(1L);
     }
 }
