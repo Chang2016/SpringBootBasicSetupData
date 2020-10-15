@@ -2,7 +2,7 @@ läuft unter jdk 1.8
 Zertifikat läuft regelmäßig ab und muss erneuert werden
 
 # Keystore:
-###Auflistung aller Einträge des Keystore
+### Auflistung aller Einträge des Keystore
 keytool -list -keystore keystore.p12 -storepass 123456
 
 ###Generiere Schlüsselpaar und füge es in self-signed certificate in keystore.p12
