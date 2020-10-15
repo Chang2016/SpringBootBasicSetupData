@@ -2,58 +2,77 @@ package org.chang.springboot.topic;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
 public class TopicServiceTest {
 
-    @TestConfiguration
-    static class TopicServiceTestContextConfiguration {
-        @MockBean
-        private TopicRepository topicRepository;
+    private TopicRepository topicRepository;
 
-        @MockBean
-        private RestTemplateBuilder restTemplateBuilder;
-
-        @Bean
-        public TopicService topicService() {
-            List<Topic> topics = initFixture();
-            when(topicRepository.findAll()).thenReturn(topics);
-            return new TopicService(restTemplateBuilder, topicRepository);
-        }
-
-        private List<Topic> initFixture() {
-            Topic topic = new Topic();
-            topic.setId(1L);
-            topic.setName("Dummy");
-            List<Topic> topicList = new ArrayList<>();
-            topicList.add(topic);
-            return topicList;
-        }
-    }
+    private RestTemplateBuilder restTemplateBuilder;
 
     //SUT
-    @Autowired
     private TopicService topicService;
+
+    @BeforeEach
+    void init() {
+        topicRepository = mock(TopicRepository.class);
+        restTemplateBuilder = mock(RestTemplateBuilder.class);
+
+        topicService = new TopicService(restTemplateBuilder, topicRepository);
+    }
 
     @Test
     void testRetrieveTopics() {
-        List<Topic> topics = topicService.retrieveTopics();
-        assertThat(topics.size()).isEqualTo(1);
-        Topic next = topics.iterator().next();
+        // given
+        List<Topic> topics = initTopicFixture();
+        when(topicRepository.findAll()).thenReturn(topics);
+        // when
+        List<Topic> retrieved = topicService.retrieveTopics();
+        // then
+        assertThat(retrieved.size()).isEqualTo(1);
+        Topic next = retrieved.iterator().next();
         assertThat(next.getName()).isEqualTo("Dummy");
         assertThat(next.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void testRetrieveTopicsStartingWith() {
+        // given
+        List<TopicDto> topicDtos = initTopicDtoFixture();
+        when(topicRepository.findByNameStartingWith(anyString())).thenReturn(topicDtos);
+        // when
+        TopicList topicList = topicService.retrieveTopicsStartingWith("sub");
+        // then
+        List<TopicDto> topics = topicList.getTopics();
+        assertThat(topics.size()).isEqualTo(1);
+        TopicDto next = topics.iterator().next();
+        assertThat(next.getId()).isEqualTo(1L);
+        assertThat(next.getName()).isEqualTo("Dummy");
+    }
+
+    private List<Topic> initTopicFixture() {
+        Topic topic = new Topic();
+        topic.setId(1L);
+        topic.setName("Dummy");
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic);
+        return topics;
+    }
+
+    private List<TopicDto> initTopicDtoFixture() {
+        List<TopicDto> topics = new ArrayList<>();
+        TopicDto topic = new TopicDto();
+        topic.setId(1L);
+        topic.setName("Dummy");
+        topics.add(topic);
+        return topics;
     }
 }
