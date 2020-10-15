@@ -31,5 +31,3 @@ EndToEndTests müssen von FullIntegrationTest ableiten
 Running with postgresql
 ###Start with 
 docker-compose -f keycloak-postgres.yml up
-
-dummy change
