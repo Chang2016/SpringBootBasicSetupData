@@ -66,7 +66,7 @@ import org.chang.springboot.SpringBootBasicDataMain;
 @SpringBootTest(classes = SpringBootBasicDataMain.class,
 		webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"timezone = GMT"})
-public class SSLTest {
+public class SslIT {
 
   @LocalServerPort
   private int port;
