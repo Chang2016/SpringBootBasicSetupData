@@ -2,8 +2,7 @@ package org.chang.springboot.course;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -150,6 +149,12 @@ public class CourseControllerTest {
     assertThat(code).isEqualTo(1002);
     Object message = ReflectionTestUtils.getField(errorMessageDto, "message");
     assertThat(message).isEqualTo("course is full");
+  }
+
+  @Test
+  public void retrieveCourseByTopicName() {
+    courseController.retrieveCoursesByTopicName("bla");
+    verify(courseService).retrieveCoursesByTopicName("bla");
   }
 
   private CourseDto createCourseDto() {
