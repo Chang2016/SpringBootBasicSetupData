@@ -1,13 +1,14 @@
 package org.chang.springboot.course;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.chang.springboot.model.api.ErrorMessageDto;
 import org.chang.springboot.student.Student;
 import org.chang.springboot.student.StudentDto;
 import org.chang.springboot.student.StudentTransformer;
@@ -20,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseControllerTest {
@@ -45,21 +47,6 @@ public class CourseControllerTest {
     this.courseService = mock(CourseService.class);
     this.courseController= new CourseController(courseJmsMessageSender,
         courseService, studentTransformer, courseTransformer);
-  }
-
-  private CourseDto createCourseDto() {
-    StudentDto studentDto = StudentDto.builder().id(1L).birthday(LocalDate.of(1988, 2, 3)).name("Bla").build();
-    Set<StudentDto> students = new HashSet<>();
-    students.add(studentDto);
-    TopicDto topicDto = TopicDto.builder().id(1L).name("Topic1").build();
-    CourseDto courseDto = new CourseDto();
-    courseDto.setId(10L);
-    courseDto.setName("Name1");
-    courseDto.setStartDate(LocalDate.now().plusDays(10));
-    courseDto.setSize(10);
-    courseDto.setStudents(students);
-    courseDto.setTopicDto(topicDto);
-    return courseDto;
   }
 
   @Test
@@ -103,5 +90,85 @@ public class CourseControllerTest {
     when(courseService.createCourse(any())).thenReturn(incorrect);
     ResponseEntity<CourseEnvelope> courseEnvelope = courseController.createCourse(courseDto, new MockHttpServletRequest());
     assertThat(courseEnvelope.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  public void addStudent() {
+    // given
+    StudentDto studentDto = StudentDto.builder()
+            .id(10L)
+            .birthday(LocalDate.of(1988, 2, 2))
+            .name("Schulz")
+            .build();
+    CourseDto courseDto = createCourseDto();
+    courseDto.getStudents().add(studentDto);
+    Course course = courseTransformer.toCourse(courseDto);
+    CourseResult courseResult = CourseResult.builder()
+            .courseStatusEnum(CourseStatusEnum.OK)
+            .error(false)
+            .course(course)
+            .build();
+    when(courseService.addStudent(anyLong(), any())).thenReturn(courseResult);
+    // when
+    ResponseEntity<CourseEnvelope> courseEnvelopeResponseEntity =
+            courseController.addStudent(1L, studentDto, new MockHttpServletRequest());
+    // then
+    assertThat(courseEnvelopeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(courseEnvelopeResponseEntity.getBody()).isNotNull();
+    CourseEnvelope courseEnvelope = courseEnvelopeResponseEntity.getBody();
+    assertThat(courseEnvelope.getCourseDto().getName()).isEqualTo(courseDto.getName());
+  }
+
+  @Test
+  public void addStudentWrong() {
+    // given
+    StudentDto studentDto = StudentDto.builder()
+            .id(10L)
+            .birthday(LocalDate.of(1988, 2, 2))
+            .name("Schulz")
+            .build();
+    CourseDto courseDto = createCourseDto();
+    courseDto.getStudents().add(studentDto);
+    Course course = courseTransformer.toCourse(courseDto);
+    CourseResult courseResult = CourseResult.builder()
+            .courseStatusEnum(CourseStatusEnum.COURSE_IS_FULL)
+            .error(true)
+            .course(course)
+            .build();
+    when(courseService.addStudent(anyLong(), any())).thenReturn(courseResult);
+    // when
+    ResponseEntity<CourseEnvelope> courseEnvelopeResponseEntity =
+            courseController.addStudent(1L, studentDto, new MockHttpServletRequest());
+    // then
+    assertThat(courseEnvelopeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(courseEnvelopeResponseEntity.getBody()).isNotNull();
+    CourseEnvelope courseEnvelope = courseEnvelopeResponseEntity.getBody();
+    assertThat(courseEnvelope.getErrorMessageDto()).isNotNull();
+    ErrorMessageDto errorMessageDto = courseEnvelope.getErrorMessageDto();
+    Object code = ReflectionTestUtils.getField(errorMessageDto, "code");
+    assertThat(code).isEqualTo(1002);
+    Object message = ReflectionTestUtils.getField(errorMessageDto, "message");
+    assertThat(message).isEqualTo("course is full");
+  }
+
+  @Test
+  public void retrieveCourseByTopicName() {
+    courseController.retrieveCoursesByTopicName("bla");
+    verify(courseService).retrieveCoursesByTopicName("bla");
+  }
+
+  private CourseDto createCourseDto() {
+    StudentDto studentDto = StudentDto.builder().id(1L).birthday(LocalDate.of(1988, 2, 3)).name("Bla").build();
+    Set<StudentDto> students = new HashSet<>();
+    students.add(studentDto);
+    TopicDto topicDto = TopicDto.builder().id(1L).name("Topic1").build();
+    CourseDto courseDto = new CourseDto();
+    courseDto.setId(10L);
+    courseDto.setName("Name1");
+    courseDto.setStartDate(LocalDate.now().plusDays(10));
+    courseDto.setSize(10);
+    courseDto.setStudents(students);
+    courseDto.setTopicDto(topicDto);
+    return courseDto;
   }
 }
